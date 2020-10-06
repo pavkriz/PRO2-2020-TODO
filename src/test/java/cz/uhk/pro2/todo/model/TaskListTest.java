@@ -15,4 +15,17 @@ public class TaskListTest {
         assertEquals(t, l.getTasks().get(0));
     }
 
+
+    @Test
+    public void testGetUndoneTasksCount() {
+        TaskList l = new TaskList();
+        Task t = new Task();
+        Task t2 = new Task();
+        Task t3 = new Task();
+        t2.setDone(true);
+        l.addTask(t);
+        l.addTask(t2);
+        l.addTask(t3);
+        assertEquals(2, l.getUndoneTasksCount());
+    }
 }

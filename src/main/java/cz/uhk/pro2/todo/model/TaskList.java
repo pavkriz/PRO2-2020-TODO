@@ -19,4 +19,8 @@ public class TaskList {
     public List<Task> getTasks() {
         return Collections.unmodifiableList(tasks);
     }
+
+    public int getUndoneTasksCount(){
+        return (int) tasks.stream().filter(c -> !c.isDone()).count();
+    }
 }
