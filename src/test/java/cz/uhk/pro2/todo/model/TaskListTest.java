@@ -15,4 +15,12 @@ public class TaskListTest {
         assertEquals(t, l.getTasks().get(0));
     }
 
+    @Test
+    public void getUndoneTasks() {
+            TaskList tasks = new TaskList();
+            Task t = new Task();
+            t.setDone(false);
+            tasks.addTask(t); // jednotkový test pro metodu
+        }
+    }
 }
