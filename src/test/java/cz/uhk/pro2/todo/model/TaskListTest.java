@@ -1,5 +1,7 @@
 package cz.uhk.pro2.todo.model;
 
+import cz.uhk.pro2.todo.Task;
+import cz.uhk.pro2.todo.TaskList;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
