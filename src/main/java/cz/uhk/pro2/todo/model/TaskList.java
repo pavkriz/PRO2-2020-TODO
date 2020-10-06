@@ -11,6 +11,11 @@ public class TaskList {
     public List<Task> getTasks() {
         return tasks;
     }
+    public int getUndoneTasksCount(){
+       //return tasks.stream().filter(t -> !t.isDone().count());
+           return 0;
+    }
+
 
     public void addTask(Task t ){
         tasks.add(t);
