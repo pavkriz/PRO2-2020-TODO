@@ -2,6 +2,8 @@ package cz.uhk.pro2.todo.model;
 
 import org.junit.Test;
 
+import java.util.Calendar;
+
 import static org.junit.Assert.*;
 
 public class TaskListTest {
@@ -17,7 +19,12 @@ public class TaskListTest {
 
     @Test
     public void getUndoneTasksCount() {
-        //  TODO dodelat test (DU)
+        TaskList taskList = new TaskList();
+        taskList.addTask(new Task("Task1", Calendar.getInstance().getTime(), false));
+        taskList.addTask(new Task("Task2", Calendar.getInstance().getTime(), true));
+        taskList.addTask(new Task("Task3", Calendar.getInstance().getTime(), true));
+        int undoneTasksCount = taskList.getUndoneTasksCount();
+        assertEquals(1, undoneTasksCount);
     }
 
 }

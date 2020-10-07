@@ -8,10 +8,10 @@ public class Task {
     private Date dueDate;
     private boolean done;
 
-    public Task () {
+    public Task() {
     }
 
-    public Task (String description, Date dueDate, boolean done) {
+    public Task(String description, Date dueDate, boolean done) {
         this.description = description;
         this.dueDate = dueDate;
         this.done = done;
@@ -39,5 +39,14 @@ public class Task {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "description='" + description + '\'' +
+                ", dueDate=" + dueDate +
+                ", done=" + done +
+                '}';
     }
 }

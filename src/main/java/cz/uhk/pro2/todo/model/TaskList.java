@@ -20,11 +20,11 @@ public class TaskList {
         tasks.remove(t);
     }
 
-    public int getUndoneTestsCount() {
+    public int getUndoneTasksCount() {
         int count = 0;
 
-        for (Task t: tasks) {
-            if (t.isDone()) count++;
+        for (Task t : tasks) {
+            if (!t.isDone()) count++;
         }
         return count;
 
