@@ -16,4 +16,14 @@ public class TaskList {
     public void removeTask(Task t){
         tasks.remove(t);
     }
+    public int getUndoneTasksCount(){
+        int y = 0;
+
+        for(int i = 0; i < tasks.size(); i++){
+            if(!tasks[i].isDone()){
+                y++;
+            }
+        }
+        return y;
+    }
 }
