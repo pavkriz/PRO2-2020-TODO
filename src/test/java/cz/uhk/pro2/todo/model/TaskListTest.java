@@ -2,6 +2,8 @@ package cz.uhk.pro2.todo.model;
 
 import org.junit.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.Assert.*;
 
 public class TaskListTest {
@@ -17,10 +19,17 @@ public class TaskListTest {
 
     @Test
     public void getUndoneTasks() {
-            TaskList tasks = new TaskList();
-            Task t = new Task();
-            t.setDone(false);
-            tasks.addTask(t); // jednotkový test pro metodu
-        }
+        TaskList tasks = new TaskList();
+        Task t1 = new Task("1s", LocalDate.now(),false);
+        Task t2 = new Task("2nd",LocalDate.now(),true);
+        Task t3 = new Task("3rd",LocalDate.now(),false);
+
+        assertEquals(0,tasks.getUndoneTasks());
+
+        tasks.addTask(t1); // jednotkový test pro metodu
+        tasks.addTask(t2);
+        tasks.addTask(t3);
+
+        assertEquals(2,tasks.getUndoneTasks());
     }
 }
