@@ -1,4 +1,4 @@
-package cz.uhk.pro2.todo;
+package test.java.cz.uhk.pro2.todo;
 
 import org.junit.Test;
 
