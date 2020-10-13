@@ -4,23 +4,16 @@ import java.util.Date;
 
 public class Task {
     private String description;
-    private Date dneDate;
+    private Date dueDate;
     private boolean done;
 
-    public Task(String description, Date dneDate, boolean done) {
+    public Task() {
+    }
+
+    public Task(String description, Date dueDate, boolean done) {
         this.description = description;
-        this.dneDate = dneDate;
+        this.dueDate = dueDate;
         this.done = done;
-    }
-    public Task(){
-
-    }
-
-    @Override
-    public String toString(){
-        String popis = description + ", " + dneDate.toString() + ", ";
-        popis += (done)? "true" : "false";
-        return  popis;
     }
 
     public String getDescription() {
@@ -31,12 +24,12 @@ public class Task {
         this.description = description;
     }
 
-    public Date getDneDate() {
-        return dneDate;
+    public Date getDueDate() {
+        return dueDate;
     }
 
-    public void setDneDate(Date dneDate) {
-        this.dneDate = dneDate;
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 
     public boolean isDone() {
@@ -45,5 +38,14 @@ public class Task {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "description='" + description + '\'' +
+                ", dueDate=" + dueDate +
+                ", done=" + done +
+                '}';
     }
 }
