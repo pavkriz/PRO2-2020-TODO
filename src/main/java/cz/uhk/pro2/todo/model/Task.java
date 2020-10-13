@@ -1,39 +1,19 @@
 package cz.uhk.pro2.todo.model;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 public class Task {
-
     private String description;
-    private LocalDate dueDate;
+    private Date dueDate;
     private boolean done;
-
-    public Task(String description, LocalDate dueDate, Boolean done) {
-        this.description = description;
-        this.dueDate = dueDate;
-        this.done = done;
-
-    }
 
     public Task() {
     }
 
-
-    public boolean isDone() {
-        return done;
-    }
-
-    public void setDone(boolean done) {
-        this.done = done;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
+    public Task(String description, Date dueDate, boolean done) {
+        this.description = description;
         this.dueDate = dueDate;
+        this.done = done;
     }
 
     public String getDescription() {
@@ -44,10 +24,28 @@ public class Task {
         this.description = description;
     }
 
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    @Override
     public String toString() {
-        return description.concat(dueDate.toString());
+        return "Task{" +
+                "description='" + description + '\'' +
+                ", dueDate=" + dueDate +
+                ", done=" + done +
+                '}';
     }
 }
-
-//dole branches - remote master - update !!!
-//potom teprve local merge - smartmerge (alt dole kliknout na remotemaster pravym - merge into current - smartmerge)!!
