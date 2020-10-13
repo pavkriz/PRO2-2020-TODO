@@ -5,26 +5,30 @@ import java.util.List;
 
 public class TaskList {
 
+    private final List<Task> tasks = new ArrayList<>();
 
-    private List<Task> tasks = new ArrayList<>();
-
-    public List<Task> getTasks() {
-        return tasks;
-    }
-    public int getUndoneTasksCount(){
-       //return tasks.stream().filter(t -> !t.isDone().count());
-           return 0;
+    public void addTask(Task task){
+        tasks.add(task);
     }
 
-
-    public void addTask(Task t ){
-        tasks.add(t);
-
-    }
-    public void removeTask(Task t)
-    {
-        tasks.remove(t);
+    public  void removeTask(Task task){
+        tasks.remove(task);
     }
 
+    public List<Task> getTasks(){
 
+        return null;
+    }
+
+    public int getUndoneTasks(){
+        int count = 0;
+        for(Task task : tasks){
+            if(task.isDone()){
+                count++;
+            }
+        }
+
+        //tasks.stream().filter(task -> task.isDone());
+        return count;
+    }
 }

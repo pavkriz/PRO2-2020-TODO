@@ -3,27 +3,37 @@ package cz.uhk.pro2.todo.model;
 import java.util.Date;
 
 public class Task {
-    public String getDescription() {
-        return description;
+
+    private String description;
+    private Date date;
+
+    public Task() {
     }
 
-    public Date getDate() {
-        return Date;
+    private boolean done;
+
+
+    public Task(String description, Date date, boolean done) {
+        this.description = description;
+        this.date = date;
+        this.done = done;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    private String description;
-
-    public void setDate(java.util.Date date) {
-        Date = date;
+    public Date getDate() {
+        return date;
     }
 
-
-
-    private java.util.Date Date;
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public boolean isDone() {
         return done;
@@ -33,15 +43,7 @@ public class Task {
         this.done = done;
     }
 
-    private boolean done;
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "description='" + description + '\'' +
-                ", Date=" + Date +
-                ", done=" + done +
-                '}';
+    public String toString(){
+        return null;
     }
-
 }
