@@ -1,26 +1,27 @@
 package main.java.cz.uhk.pro2.todo.model;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Task {
     private String description;
-    private LocalDate dueDate;
+    private Date dueDate;
     private Boolean done;
 
     public Task(){
     }
 
-    public Task(String description, LocalDate dueDate, Boolean done) {
+    public Task(String description, Date dueDate, Boolean done) {
         this.description = description;
         this.dueDate = dueDate;
         this.done = done;
     }
 
-    public LocalDate getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 
