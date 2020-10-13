@@ -15,4 +15,8 @@ public class TaskListTest {
         assertEquals(t, l.getTasks().get(0));
     }
 
+    @Test
+    public void getUndoneTasksCount() {
+        // DU
+    }
 }
