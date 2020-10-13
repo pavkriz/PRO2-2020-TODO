@@ -39,8 +39,8 @@ public class TasksTableModel extends AbstractTableModel {
             case 0:return "Description";
             case 1:return "Due date";
             case 2:return "Is task done?";
-            
-        }
-        return "";
+            default: return "";
+        } // default
+        
     }
 }
