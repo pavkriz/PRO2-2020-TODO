@@ -5,23 +5,22 @@ import java.util.Collections;
 import java.util.List;
 
 public class TaskList {
-    private List<Task> tasks = new ArrayList<>();
+    private final List<Task> tasks = new ArrayList<>();
+
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void removeTask(int index) {
+        tasks.remove(index);
+    }
 
     public List<Task> getTasks() {
         return Collections.unmodifiableList(tasks);
     }
 
-    public void addTask(Task t) {
-        tasks.add(t);
-    }
-
-    public void removeTask(Task t) {
-        tasks.remove(t);
-    }
-
-    public int getUndoneTasksCount() {
-        // lambda
-        // return tasks.stream().filter(t -> !t.isDone()).count();
-        return 0; // TODO
+    public int getUndoneTasksCount(){
+        return (int) tasks.stream().filter(c -> !c.isDone()).count();
     }
 }

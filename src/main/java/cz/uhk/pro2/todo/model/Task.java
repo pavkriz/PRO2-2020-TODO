@@ -7,13 +7,15 @@ public class Task {
     private Date dueDate;
     private boolean done;
 
-    public Task() {
-    }
 
     public Task(String description, Date dueDate, boolean done) {
-        this.description = description;
-        this.dueDate = dueDate;
-        this.done = done;
+        setDescription(description);
+        setDueDate(dueDate);
+        setDone(done);
+    }
+
+    public Task() {
+
     }
 
     public String getDescription() {
@@ -42,10 +44,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "description='" + description + '\'' +
-                ", dueDate=" + dueDate +
-                ", done=" + done +
-                '}';
+        return "description: " + description + " dueDate: " + dueDate + " done: " + done;
     }
 }
