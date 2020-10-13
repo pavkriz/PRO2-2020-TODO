@@ -20,7 +20,11 @@ public class TaskList {
         return Collections.unmodifiableList(tasks);
     }
 
-    public int getUndoneTasksCount(){
+    public int getUndoneTasksCount() {
         return (int) tasks.stream().filter(c -> !c.isDone()).count();
+    }
+
+    public int getTasksCount() {
+        return tasks.size();
     }
 }
