@@ -35,6 +35,16 @@ public class TodoMain extends JFrame {
         // zeptame se uzivatele
         // vytvorime task a pridame do seznamu
         // notifikujeme tabulku, ze doslo ze zmene dat
+        JOptionPane jo = new JOptionPane();
+        String des = jo.showInputDialog("Zadejte description");
+        if(des!="" || des!=null){
+            taskList.addTask(new Task(des,new Date(),false));
+        }
+        tbl.revalidate();
+        tbl.repaint();
+
+
+
     }
 
     public static void main(String[] args) {
