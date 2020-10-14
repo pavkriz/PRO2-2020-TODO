@@ -36,6 +36,11 @@ public class TasksTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         // TODO DU2
-        return "Nadpis";
+        switch (column) {
+            case 0: return "Description";
+            case 1: return "Due Date";
+            case 2: return "Done";
+        }
+        return "";
     }
 }

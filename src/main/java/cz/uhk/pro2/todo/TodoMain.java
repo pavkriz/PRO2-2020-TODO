@@ -8,7 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 public class TodoMain extends JFrame {
     private JButton btnAdd = new JButton("Přidat úkol");
@@ -33,8 +35,14 @@ public class TodoMain extends JFrame {
     private void addTask() {
         // TODO DU1
         // zeptame se uzivatele
+        String description = JOptionPane.showInputDialog("Description: ");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date();
+        Boolean done = false;
         // vytvorime task a pridame do seznamu
+        taskList.addTask(new Task(description,date,done));
         // notifikujeme tabulku, ze doslo ze zmene dat
+        tbl.addNotify();
     }
 
     public static void main(String[] args) {

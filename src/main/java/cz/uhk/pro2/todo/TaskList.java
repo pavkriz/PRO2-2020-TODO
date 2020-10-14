@@ -3,7 +3,6 @@ package cz.uhk.pro2.todo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class TaskList {
 
@@ -13,11 +12,22 @@ public class TaskList {
         return Collections.unmodifiableList(tasks); //vrati nemenny list
     }
 
+    public TaskList taskList;
+
+    public void TasksTableModel(TaskList taskList) {
+        this.taskList = taskList;
+    }
+
     public void addTask(Task t){
         tasks.add(t);
     }
 
     public void removeTask(Task t){
         tasks.remove(t);
+    }
+
+    public int getUndoneTasksCount() {
+        //TODO
+        return taskList.getUndoneTasksCount();
     }
 }
