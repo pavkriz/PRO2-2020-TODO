@@ -22,6 +22,9 @@ public class TaskList {
     public int getUndoneTasksCount() {
         // lambda
         // return tasks.stream().filter(t -> !t.isDone()).count();
-        return 0; // TODO
+
+        int undoneTaskCount = 0;
+        for (Task task : tasks) if (!task.isDone()) undoneTaskCount++;
+        return undoneTaskCount;
     }
 }

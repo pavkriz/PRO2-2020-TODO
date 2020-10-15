@@ -40,6 +40,7 @@ public class TasksTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         // TODO DU2
+        // Přes switch se rozhodne, který sloupec bude pojmenován
         switch (column) {
             case 0: return "Popis";
             case 1: return "Platnost";
