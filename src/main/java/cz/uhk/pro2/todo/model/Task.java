@@ -1,5 +1,6 @@
 package cz.uhk.pro2.todo.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Task {
@@ -44,6 +45,10 @@ public class Task {
     }
 
     public String toString(){
-        return null;
+        return "Task { " +
+                "description = '" + description + '\''+
+                ", dueDate = " + date +
+                ", done = " + done +
+                '}';
     }
 }
