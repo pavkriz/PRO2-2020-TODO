@@ -3,6 +3,7 @@ package cz.uhk.pro2.todo.model;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -20,9 +21,9 @@ public class TaskListTest {
     @Test
     public void getUndoneTasks() {
         TaskList tasks = new TaskList();
-        Task t1 = new Task("1s", LocalDate.now(),false);
-        Task t2 = new Task("2nd",LocalDate.now(),true);
-        Task t3 = new Task("3rd",LocalDate.now(),false);
+        Task t1 = new Task("1s", new Date(),false);
+        Task t2 = new Task("2nd",new Date(),true);
+        Task t3 = new Task("3rd",new Date(),false);
 
         assertEquals(0,tasks.getUndoneTasks());
 

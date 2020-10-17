@@ -6,8 +6,6 @@ import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Date;
 
 public class TodoMain extends JFrame {
@@ -20,6 +18,7 @@ public class TodoMain extends JFrame {
     public TodoMain() throws HeadlessException {
         setTitle("TODO app");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         pnlNorth.add(btnAdd);
         add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(tbl), BorderLayout.CENTER);
@@ -31,20 +30,19 @@ public class TodoMain extends JFrame {
     }
 
     private void addTask() {
-        // TODO DU1
-        // zeptame se uzivatele
-        // vytvorime task a pridame do seznamu
-        // notifikujeme tabulku, ze doslo ze zmene dat
+        Task newTask = new Task("",new Date(),false);
+        newTask.setDescription(JOptionPane.showInputDialog("Nazev nove ulohy: "));
+        taskList.addTask(newTask);
+        tbl.addNotify(); // došlo ke změně dat
     }
 
     public static void main(String[] args) {
-        //System.out.println("Hello!!!");
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                TodoMain window = new TodoMain();
-                window.setVisible(true);
-            }
+        SwingUtilities.invokeLater(() -> {
+            TodoMain window = new TodoMain();
+            window.setVisible(true);
         });
     }
+
+    //pres git: VCS->Git->Fetch, a pak mergnout zmeny z master do vasi vetve
+    // VCS -> Git -> Branches -> Master -> Merge Into Current
 }

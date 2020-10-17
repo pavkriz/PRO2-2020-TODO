@@ -11,7 +11,7 @@ public class TaskList {
     public void addTask(Task t) {
         taskList.add(t);
     }
-    public void removeTask(Task t) {
+    public void removeTask(Task t) { // pro dalsi tlacitka
         taskList.remove(t);
     }
     public List<Task> getTasks() {

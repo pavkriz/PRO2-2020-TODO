@@ -42,10 +42,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "description='" + description + '\'' +
-                ", dueDate=" + dueDate +
-                ", done=" + done +
-                '}';
+        return description.concat(dueDate.toString().concat(String.valueOf(done)));
     }
 }
