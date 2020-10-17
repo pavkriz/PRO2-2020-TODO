@@ -31,10 +31,10 @@ public class TodoMain extends JFrame {
     }
 
     private void addTask() {
-        // TODO DU1
-        // zeptame se uzivatele
-        // vytvorime task a pridame do seznamu
-        // notifikujeme tabulku, ze doslo ze zmene dat
+        String description = JOptionPane.showInputDialog("Zadejte úkol:");
+        taskList.addTask(new Task(description, new Date(), false));
+        tasksTableModel.fireTableDataChanged();
+
     }
 
     public static void main(String[] args) {

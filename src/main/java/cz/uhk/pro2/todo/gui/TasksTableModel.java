@@ -7,6 +7,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class TasksTableModel extends AbstractTableModel {
     private TaskList taskList;
+    private String[] columnNames = {"Description", "Due", "Done"};
 
     public TasksTableModel(TaskList taskList) {
         this.taskList = taskList;
@@ -35,7 +36,6 @@ public class TasksTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int column) {
-        // TODO DU2
-        return "Nadpis";
+        return columnNames[column];
     }
 }
