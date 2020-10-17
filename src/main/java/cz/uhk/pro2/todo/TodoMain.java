@@ -24,6 +24,7 @@ public class TodoMain extends JFrame {
         add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(tbl), BorderLayout.CENTER);
         pack();
+        setLocationRelativeTo(null);
         btnAdd.addActionListener(e -> addTask());
         taskList.addTask(new Task("Naučit se Javu", new Date(), false));
         taskList.addTask(new Task("Jit se proběhnout", new Date(), false));

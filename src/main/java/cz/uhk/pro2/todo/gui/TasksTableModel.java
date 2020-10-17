@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class TasksTableModel extends AbstractTableModel {
     private TaskList taskList;
-    private String[] columnNames = {"Description", "Due", "Done"};
+    private String[] columnNames = {"Úkol", "Splnit do", "Splněno"};
 
     public TasksTableModel(TaskList taskList) {
         this.taskList = taskList;
