@@ -26,8 +26,7 @@ public class TaskList {
                 pocet++;
             }
         }
-        // lambda
-        // return tasks.stream().filter(t -> !t.isDone()).count();
-        return pocet; // TODO
+        
+        return pocet; 
     }
 }
