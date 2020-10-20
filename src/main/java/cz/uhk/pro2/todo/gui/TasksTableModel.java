@@ -30,7 +30,7 @@ public class TasksTableModel extends AbstractTableModel {
             case 0:
                 return task.getDescription();
             case 1:
-                return task.getDueDate();
+                return task.getDueDateFormat("dd.MM.yyyy");
             case 2:
                 return task.isDone() ? "ANO" : "NE";
             default:

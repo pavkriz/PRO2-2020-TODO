@@ -1,5 +1,6 @@
 package cz.uhk.pro2.todo.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Task {
@@ -28,6 +29,11 @@ public class Task {
 
     public Date getDueDate() {
         return dueDate;
+    }
+
+    public String getDueDateFormat(String format) {
+        SimpleDateFormat dateParser = new SimpleDateFormat(format);
+        return dateParser.format(dueDate);
     }
 
     public void setDueDate(Date dueDate) {
