@@ -1,7 +1,7 @@
-package main.java.cz.uhk.pro2.todo.GUI;
+package cz.uhk.pro2.todo.GUI;
 
-import main.java.cz.uhk.pro2.todo.model.Task;
-import main.java.cz.uhk.pro2.todo.model.TaskList;
+import cz.uhk.pro2.todo.model.Task;
+import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -56,5 +56,9 @@ public class TasksTableModel extends AbstractTableModel {
                 break;
         }
         return "Chyba 2";
+    }
+
+    public void removeRow(int selectedRow) {
+        fireTableRowsDeleted(selectedRow, selectedRow);
     }
 }

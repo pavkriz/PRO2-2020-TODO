@@ -1,4 +1,4 @@
-package main.java.cz.uhk.pro2.todo.model;
+package cz.uhk.pro2.todo.model;
 
 import java.time.LocalDate;
 import java.util.Date;

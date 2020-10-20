@@ -1,12 +1,14 @@
-package main.java.cz.uhk.pro2.todo.model;
+package cz.uhk.pro2.todo.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class TaskList {
-    private List<Task> tasks = new ArrayList<>();
-
+    private List<Task> tasks;
+    public TaskList(){
+         tasks = new ArrayList<>();
+    }
     public List<Task> getTasks(){
         return Collections.unmodifiableList(tasks);
     }

@@ -1,7 +1,7 @@
-package test.java.cz.uhk.pro2.todo.model;
+package cz.uhk.pro2.todo.model;
 
-import main.java.cz.uhk.pro2.todo.model.Task;
-import main.java.cz.uhk.pro2.todo.model.TaskList;
+import cz.uhk.pro2.todo.model.Task;
+import cz.uhk.pro2.todo.model.TaskList;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
