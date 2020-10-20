@@ -6,9 +6,10 @@ import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TodoMain extends JFrame{
+public class TodoMain extends JFrame {
 
     private JButton btnAdd = new JButton("Přidat úkol");
     private JPanel pnlNorth = new JPanel();
@@ -16,7 +17,7 @@ public class TodoMain extends JFrame{
     private TasksTableModel tasksTableModel = new TasksTableModel(taskList);
     private JTable tbl = new JTable(tasksTableModel);
 
-    public TodoMain() throws HeadlessException{
+    public TodoMain() throws HeadlessException {
         setTitle("TODO app");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pnlNorth.add(btnAdd);
@@ -33,11 +34,24 @@ public class TodoMain extends JFrame{
         pack();
     }
 
-    private void addTask(){
-        //TODO
-        String taskString = JOptionPane.showInputDialog("Zadej ulohu");
-        taskList.addTask(new Task(taskString, new Date(), false));
-        //notifikujeme tabulku ze doslo ke zmene dat
+    private void addTask() {
+        //úkol minuleho tydne
+        String desc = JOptionPane.showInputDialog("Zadej popis tasku");
+        String sdate = JOptionPane.showInputDialog("Zadej datum ve formátu dd/mm/YYYY");
+
+        Date date;
+        try {
+            date = new SimpleDateFormat("dd/MM/yyyy").parse(sdate);
+        } catch (Exception e) {
+            date = new Date();
+        }
+
+        boolean done;
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Je task hotový?");
+        done = dialogResult == JOptionPane.YES_OPTION;
+
+        taskList.addTask(new Task(desc, date, done));
+        tbl.addNotify();
     }
 
     public static void main(String[] args) {
@@ -51,5 +65,5 @@ public class TodoMain extends JFrame{
             }
         });
     }
-
 }
+

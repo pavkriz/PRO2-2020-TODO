@@ -27,22 +27,36 @@ public class TasksTableModel extends AbstractTableModel{
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Task task = taskList.getTasks().get(rowIndex);
-        switch (columnIndex){
-            case 0: return task.getDescription();
-            case 1: return task.getDueDate();
-            case 2: return task.isDone();
+        switch(columnIndex){
+            case 0:
+                return task.getDescription();
+
+            case 1:
+                return task.getDueDate();
+
+            case 2:
+                return task.isDone();
+
+            default:
+                System.out.println("Chyba?");
+                break;
         }
-        return ""; // nikdy by se nemelo stat
+        return null;
     }
 
     @Override
     public String getColumnName(int column) {
-        Task task = taskList.getTasks().get(column);
-        switch (column){
-            case 0: return "Úloha";
-            case 1: return "Datum";
-            case 2: return "Stav úlohy";
+        switch(column){
+            case 0:
+                return "Popis";
+            case 1:
+                return "Datum";
+            case 2:
+                return "IsDone?";
+            default:
+                System.out.println("Chyba");
+                break;
         }
-        return ""; // nikdy by se nemelo stat
+        return "Chyba 2";
     }
 }
