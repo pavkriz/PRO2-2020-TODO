@@ -44,6 +44,10 @@ public class Task {
     }
 
     public String toString(){
-        return null;
+        return "Task { " +
+                "description = '" + description + '\''+
+                ", dueDate = " + date +
+                ", done = " + done +
+                '}';
     }
 }

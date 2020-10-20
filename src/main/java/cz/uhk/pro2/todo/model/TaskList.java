@@ -1,8 +1,9 @@
 package cz.uhk.pro2.todo.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-
 public class TaskList {
 
     private final List<Task> tasks = new ArrayList<>();
@@ -16,8 +17,7 @@ public class TaskList {
     }
 
     public List<Task> getTasks(){
-
-        return null;
+        return Collections.unmodifiableList(tasks);
     }
 
     public int getUndoneTasks(){
