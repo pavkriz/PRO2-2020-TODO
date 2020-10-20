@@ -20,8 +20,14 @@ public class TaskList {
     }
 
     public int getUndoneTasksCount() {
+        int pocet=0;
+        for(Task t : tasks){
+            if(!t.isDone()){
+                pocet++;
+            }
+        }
         // lambda
         // return tasks.stream().filter(t -> !t.isDone()).count();
-        return 0; // TODO
+        return pocet; // TODO
     }
 }
