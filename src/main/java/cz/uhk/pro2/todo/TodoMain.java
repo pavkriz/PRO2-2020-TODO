@@ -18,11 +18,13 @@ public class TodoMain extends JFrame {
     private TaskList taskList = new TaskList();
     private TasksTableModel tasksTableModel = new TasksTableModel(taskList);
     private JTable tbl = new JTable(tasksTableModel);
+    private JLabel lblUndoneTasks = new JLabel("Počet nesplněných úkolů: ");
 
     public TodoMain() throws HeadlessException {
         setTitle("TODO app");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pnlNorth.add(btnAdd);
+        pnlNorth.add(lblUndoneTasks);
         add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(tbl), BorderLayout.CENTER);
         pack();
@@ -33,7 +35,7 @@ public class TodoMain extends JFrame {
     }
 
     private void addTask() {
-        // TODO DU1
+        // TODO 13.10.2020 DU1
         // zeptame se uzivatele
         String description = JOptionPane.showInputDialog("Description: ");
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -44,6 +46,16 @@ public class TodoMain extends JFrame {
         // notifikujeme tabulku, ze doslo ze zmene dat
         tbl.addNotify();
     }
+
+    // TODO 20.10.2020 DU1
+    // Tlacitko pro smazani vybraneho radku
+
+    // TODO 20.10.2020 DU2
+    // Label, ktery bude zobrazovat pocet nesplnenych tasku
+
+    // TODO 20.10.2020 DU3
+    // Tlacitko na ulozeni seznamu tasku do JSON souboru
+    // [{ description:"Naucit se Javu",.... },{  },{  }]
 
     public static void main(String[] args) {
         //System.out.println("Hello!!!");
