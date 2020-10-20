@@ -8,7 +8,9 @@ public class TaskList {
     private List<Task> tasks = new ArrayList<>();
 
     public List<Task> getTasks() {
-        return Collections.unmodifiableList(tasks);
+        //Vrátí nemodifikovatelný list
+        //return Collections.unmodifiableList(tasks);
+        return tasks;
     }
 
     public void addTask(Task t) {
@@ -18,6 +20,11 @@ public class TaskList {
     public void removeTask(Task t) {
         tasks.remove(t);
     }
+
+    public void removeTask(int position) {
+        tasks.remove(position);
+    }
+
 
     public int getUndoneTasksCount() {
         // lambda
