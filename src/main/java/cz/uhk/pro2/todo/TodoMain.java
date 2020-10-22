@@ -1,11 +1,15 @@
 package cz.uhk.pro2.todo;
 
+import com.google.gson.Gson;
 import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,6 +17,7 @@ import java.util.Date;
 public class TodoMain extends JFrame {
     private JButton btnAdd = new JButton("Přidat úkol");
     private JButton btnRemove = new JButton("Odstranit úkol");
+    private JButton btnConvert = new JButton("Převeď na JSON");
 
     private JPanel pnlNorth = new JPanel();
     private TaskList taskList = new TaskList();
@@ -26,8 +31,11 @@ public class TodoMain extends JFrame {
     public TodoMain() throws HeadlessException {
         setTitle("TODO app");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(600,600));
+
         pnlNorth.add(btnAdd);
         pnlNorth.add(btnRemove);
+        pnlNorth.add(btnConvert);
 
         pnlNorth.add(lblUndoneTasks);
 
@@ -37,6 +45,7 @@ public class TodoMain extends JFrame {
 
         btnAdd.addActionListener(e -> addTask());
         btnRemove.addActionListener(e -> removeTask(tbl.getSelectedRow()));
+        btnConvert.addActionListener(e -> saveAsJSON());
 
         taskList.addTask(new Task("Naučit se Javu", new Date(), false));
         taskList.addTask(new Task("Jit se proběhnout", new Date(), false));
@@ -65,9 +74,6 @@ public class TodoMain extends JFrame {
             e.printStackTrace();
         }
 
-        // notifikujeme tabulku, ze doslo ze zmene dat
-        tasksTableModel.fireTableDataChanged();
-
         updateVariables();
     }
 
@@ -77,9 +83,6 @@ public class TodoMain extends JFrame {
     private void removeTask(int rowIndex) {
 
         taskList.removeTask(rowIndex);
-        // notifikujeme tabulku, ze doslo ze zmene dat
-        tasksTableModel.fireTableDataChanged();
-
         updateVariables();
     }
 
@@ -87,15 +90,35 @@ public class TodoMain extends JFrame {
     // Label, ktery bude zobrazovat pocet nesplnenych tasku
 
     public void updateVariables() {
-        lblUndoneTasks.setText("Počet nesplněných úkolů: " + taskList.getUndoneTasksCount());
+        // notifikujeme tabulku, ze doslo ze zmene dat
+        tasksTableModel.fireTableDataChanged();
+        // Změní label s množstvím nesplněných úkolů
+        lblUndoneTasks.setText("Nesplněné úkoly: " + taskList.getUndoneTasksCount());
     }
 
     // TODO 20.10.2020 DU3
     // Tlačítko na uložení seznamu tasku do JSON souboru
     // Předem definovaný název json v projektu
     // Výsledek: [{ description: "nadf" , ...},{},{}]
-    // kouknout se na prednasky
-    // Editovat pom.xml -> Maven + External Libraries
+
+    private void saveAsJSON() {
+        if (taskList.getTasksCount() == 0) System.out.println("Seznam neobsahuje žádné úkoly.");
+        else {
+            try {
+                Gson gson = new Gson();
+                Writer w = new FileWriter("SeznamUkolu.json");
+
+                // Převede taskList jako String formátu json
+                gson.toJson(taskList, w);
+
+                // Writer "navalí" data to souboru pomoci metody flush() a následně zavře Writer metodou close()
+                w.flush();
+                w.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
     public static void main(String[] args) {

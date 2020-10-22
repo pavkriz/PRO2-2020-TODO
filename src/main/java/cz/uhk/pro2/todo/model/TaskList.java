@@ -25,6 +25,9 @@ public class TaskList {
         tasks.remove(position);
     }
 
+    public int getTasksCount(){
+        return tasks.size();
+    }
 
     public int getUndoneTasksCount() {
         // lambda
