@@ -4,38 +4,50 @@ import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TodoMain extends JFrame {
 
     private JButton btnAdd = new JButton("Přidat úkol");
+    private JButton btnDelete = new JButton("Odebrat vybraný úkol");
+    private JButton btnSave = new JButton("Uložit seznam");
     private JPanel pnlNorth = new JPanel();
     private TaskList taskList = new TaskList();
     private TasksTableModel tasksTableModel = new TasksTableModel(taskList);
     private JTable tbl = new JTable(tasksTableModel);
+    private JLabel lblUndoneTasks = new JLabel("Pocet nesplnených úkolů: 0");
 
     public TodoMain() throws HeadlessException {
         setTitle("TODO app");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pnlNorth.add(btnAdd);
+        pnlNorth.add(btnDelete);
+        pnlNorth.add(btnSave);
+        pnlNorth.add(lblUndoneTasks);
         add(pnlNorth, BorderLayout.NORTH);
         add(tbl, BorderLayout.CENTER);
-        btnAdd.addActionListener(e -> addTask());
-       /*
-        taskList.addTask(new Task("Naucit se Javu", new Date(), false));
-        taskList.addTask(new Task("Behat", new Date(), false));
-        taskList.addTask(new Task("Nakoupit", new Date(), false));
-        taskList.addTask(new Task("Vyvarit rousku", new Date(), false));
-        taskList.addTask(new Task("Naucit se Javu", new Date(), false));
-       */
+        btnAdd.addActionListener(e ->{
+            addTask();
+            updateUndoneTasks();
+        });
+        btnDelete.addActionListener(e ->{
+            deleteTask();
+            updateUndoneTasks();
+        });
+        btnSave.addActionListener(e -> saveTasks());
         pack();
     }
 
     private void addTask() {
-        //úkol minuleho tydne
         String desc = JOptionPane.showInputDialog("Zadej popis tasku");
         String sdate = JOptionPane.showInputDialog("Zadej datum ve formátu dd/mm/YYYY");
 
@@ -52,6 +64,38 @@ public class TodoMain extends JFrame {
 
         taskList.addTask(new Task(desc, date, done));
         tbl.addNotify();
+        tbl.updateUI();
+    }
+
+    private void deleteTask(){
+        int selectRow = tbl.getSelectedRow();
+        if(selectRow != -1){
+            taskList.removeTask(selectRow);
+        }
+        tbl.updateUI();
+    }
+
+    private void updateUndoneTasks() {
+        lblUndoneTasks.setText("Počet nesplněných úkolů: " + taskList.getUndoneTasksCount());
+    }
+
+    private void saveTasks() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("JSON soubory", "json"));
+        fileChooser.setDialogTitle("Vyberte, kam uložit soubor s daty");
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").create();
+
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            try {
+                FileWriter fw = new FileWriter(fileToSave);
+                fw.write(gson.toJson(taskList));
+                fw.close();
+            }
+            catch (Throwable throwable) {
+                JOptionPane.showMessageDialog(this, "Soubor se nepodařilo uložit");
+            }
+        }
     }
 
     public static void main(String[] args) {
