@@ -20,6 +20,8 @@ public class TaskList {
         tasks.remove(t);
     }
 
+    public void removeTask(int index) {tasks.remove(index);}
+
     public int getUndoneTasksCount() {
         int count = 0;
 

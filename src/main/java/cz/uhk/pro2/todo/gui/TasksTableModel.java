@@ -37,6 +37,5 @@ public class TasksTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         return columnNames[column];
-        // TODO 13.10.2020 DU2
     }
 }
