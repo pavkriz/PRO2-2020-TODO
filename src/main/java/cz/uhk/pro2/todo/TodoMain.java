@@ -1,34 +1,45 @@
 package cz.uhk.pro2.todo;
 
+import com.google.gson.*;
+import com.google.gson.internal.GsonBuildConfig;
 import cz.uhk.pro2.todo.gui.TaskTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 
 public class  TodoMain extends  JFrame{
 
     private final TaskList taskList = new TaskList();
 
     private final JButton btnAdd = new JButton("Add Task");
+    private final JButton btnRemove = new JButton("Remove Task");
     private final JPanel pnlNorth = new JPanel();
 
     private final TaskTableModel taskTableModel = new TaskTableModel(taskList);
     private final JTable jTable = new JTable(taskTableModel);
+    private final JLabel undoneLabel = new JLabel("Undone Tasks");
+
+    private final GsonBuilder gsonBuilder = new GsonBuilder();
+    private final Gson gson = gsonBuilder.create();
 
     public TodoMain() throws HeadlessException {
-        taskList.addTask(new Task("Learn Java 'cause you cannot C#!", new Date(), false));
-        taskList.addTask(new Task("Go run 'cause you are fat!", new Date(), false));
-        taskList.addTask(new Task("Boil all the mask to finish this task!", new Date(), false));
+        loadJson();
+        undoneLabel.setText(taskList.getUndoneTasks());
 
         setTitle("TODO App");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pnlNorth.add(btnAdd);
+        pnlNorth.add(btnRemove);
+        pnlNorth.add(undoneLabel);
+
 
         add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(jTable), BorderLayout.CENTER);
@@ -41,6 +52,43 @@ public class  TodoMain extends  JFrame{
                 parseException.printStackTrace();
             }
         });
+
+        btnRemove.addActionListener(e -> {
+            try{
+                taskList.removeTask(jTable.getSelectedRow());
+                jTable.addNotify();
+                save();
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    private void loadJson() {
+        JsonParser parser = new JsonParser();
+        try {
+            Object obj = parser.parse(new FileReader("taskList.json"));
+
+            JsonObject jsonObject = (JsonObject) obj;
+
+            JsonArray companyList = (JsonArray) jsonObject.get("tasks");
+
+            for(int i = 0; i < companyList.size() ;i++){
+                taskList.addTask(
+                        new Task(
+                                companyList.get(i).getAsJsonObject().get("description").toString().replace('"',' ').trim(),
+                                dateParse(
+                                        companyList.get(i).getAsJsonObject().get("date").toString().replace('"',' ').trim()
+                                ),
+                                Boolean.parseBoolean(
+                                        companyList.get(i).getAsJsonObject().get("done").toString().replace('"',' ').trim()
+                                )
+                        )
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void addTask() throws ParseException {
@@ -52,9 +100,17 @@ public class  TodoMain extends  JFrame{
 
         //Notify on Table Change
         jTable.addNotify();
+        undoneLabel.setText(taskList.getUndoneTasks());
+        //Save to JSON file
+        save();
+    }
 
-        for(int i =0; i<taskList.getTasks().size();i++){
-            System.out.println(taskList.getTasks().get(i));
+    private void save() {
+        gsonBuilder.setPrettyPrinting();
+        try (Writer file = new FileWriter("taskList.json")) {
+            gson.toJson(taskList,file);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -71,6 +127,11 @@ public class  TodoMain extends  JFrame{
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        return date;
+    }
+
+    private Date dateParse(String strDate) throws ParseException {
+        Date date = new SimpleDateFormat("dd.MM.yyyy").parse(strDate);
         return date;
     }
 

@@ -1,0 +1,19 @@
+{
+  "tasks": [
+    {
+      "description": "Learn Java \u0027cause you cannot C#!",
+      "date": "26.10.2020",
+      "done": false
+    },
+    {
+      "description": "Go run \u0027cause you are fat!",
+      "date": "14.8.1986",
+      "done": false
+    },
+    {
+      "description": "Boil all the mask to finish this task!",
+      "date": "13.5.2020",
+      "done": false
+    }
+  ]
+}

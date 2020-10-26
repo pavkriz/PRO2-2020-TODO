@@ -1,18 +1,15 @@
 package cz.uhk.pro2.todo.model;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Task {
 
     private String description;
     private Date date;
+    private boolean done;
 
     public Task() {
     }
-
-    private boolean done;
-
 
     public Task(String description, Date date, boolean done) {
         this.description = description;

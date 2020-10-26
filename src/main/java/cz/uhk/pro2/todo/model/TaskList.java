@@ -13,23 +13,23 @@ public class TaskList {
         tasks.add(task);
     }
 
-    public  void removeTask(Task task){
-        tasks.remove(task);
+    public void removeTask(int taskID){
+        tasks.remove(taskID);
     }
 
     public List<Task> getTasks(){
         return Collections.unmodifiableList(tasks);
     }
 
-    public int getUndoneTasks(){
+    public String getUndoneTasks(){
         int count = 0;
         for(Task task : tasks){
-            if(task.isDone()){
+            if(!task.isDone()){
                 count++;
             }
         }
-
+        String str = String.valueOf(count);
         //tasks.stream().filter(task -> task.isDone());
-        return count;
+        return str;
     }
 }
