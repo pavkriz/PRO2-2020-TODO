@@ -22,7 +22,7 @@ public class TaskList {
     public int getUndoneTasksCount() {
         int pocet=0;
         for(Task t : tasks){
-            if(!t.isDone()){
+            if(!(t.isDone())){
                 pocet++;
             }
         }
