@@ -3,12 +3,9 @@ package cz.uhk.pro2.todo.gui;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
-import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class TaskTableModel extends AbstractTableModel {
 
@@ -55,5 +52,8 @@ public class TaskTableModel extends AbstractTableModel {
             tmp++;
         }
         return columnNames[column];
+    }
+    public void removeRow(int selectedRow) {
+        fireTableRowsDeleted(selectedRow, selectedRow);
     }
 }
