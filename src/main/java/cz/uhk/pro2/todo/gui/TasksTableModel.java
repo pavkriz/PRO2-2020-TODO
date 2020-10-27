@@ -6,7 +6,7 @@ import cz.uhk.pro2.todo.model.TaskList;
 import javax.swing.table.AbstractTableModel;
 
 public class TasksTableModel extends AbstractTableModel {
-    private TaskList taskList;
+    private final TaskList taskList;
 
     public TasksTableModel(TaskList taskList) {
         this.taskList = taskList;
@@ -29,13 +29,19 @@ public class TasksTableModel extends AbstractTableModel {
             case 0: return task.getDescription();
             case 1: return task.getDueDate();
             case 2: return task.isDone();
+            default: break;                     //je to dobře?/proč
         }
         return ""; // tohle by se nemelo volat
     }
 
     @Override
     public String getColumnName(int column) {
-        // TODO DU2
+        switch (column) {
+            case 0: return "Description";
+            case 1: return "Due date";
+            case 2: return "Done";
+            default: break;
+        }
         return "Nadpis";
     }
 }

@@ -1,11 +1,15 @@
 package cz.uhk.pro2.todo.model;
 
+import com.google.gson.Gson;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class TaskList {
-    private List<Task> tasks = new ArrayList<>();
+
+    public List<Task> tasks = new ArrayList<>();
 
     public List<Task> getTasks() {
         return Collections.unmodifiableList(tasks);
@@ -19,9 +23,16 @@ public class TaskList {
         tasks.remove(t);
     }
 
-    public int getUndoneTasksCount() {
-        // lambda
-        // return tasks.stream().filter(t -> !t.isDone()).count();
-        return 0; // TODO
+    public String getUndoneTasksCount() {
+        long undoneTasks = tasks.stream().filter(t -> !t.isDone()).count();
+        return String.valueOf(undoneTasks);
+    }
+
+    public String toJson() {
+        return new Gson().toJson(tasks);
+    }
+
+    public Task getTaskIndex(int index) {
+        return tasks.get(index);
     }
 }
