@@ -31,14 +31,25 @@ public class TodoMain extends JFrame {
         pnlSouth.add(btnDel);
         pnlNorth.add(lblUndone);
         pnlSouth.add(saveJSON);
-        add(pnlSouth,BorderLayout.SOUTH);
-        add(pnlNorth,BorderLayout.NORTH);
+        add(pnlSouth, BorderLayout.SOUTH);
+        add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(tbl), BorderLayout.CENTER);
         pack();
         btnAdd.addActionListener(e -> addTask());
         btnDel.addActionListener(e -> delTask());
-        saveJSON.addActionListener(e -> saveFile());
+        saveJSON.addActionListener(e -> saveFile()); //json save
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        try {
+            taskList.addTask(new Task("default", sdf.parse("12.12.2020 12:00"), true));
+            taskList.addTask(new Task("default2", sdf.parse("12.12.2021 12:00"), true));
+            taskList.addTask(new Task("default3", sdf.parse("12.12.2020 18:00"), true));
+            taskList.addTask(new Task("default4", sdf.parse("27.10.2020 15:00"), true));
+            taskList.addTask(new Task("default5", sdf.parse("27.10.2020 13:50"), true));
+        } catch (Exception c) {
+            c.printStackTrace();
+        }
     }
+
 
     private void saveFile() {
         try {
@@ -61,11 +72,11 @@ public class TodoMain extends JFrame {
 
     private void addTask(){
         String desc = JOptionPane.showInputDialog("Zadej popis tasku");
-        String sdate = JOptionPane.showInputDialog("Zadej datum ve formátu dd/mm/YYYY");
+        String sdate = JOptionPane.showInputDialog("Zadej datum ve formátu dd.mm.yyyy hh:mm");
 
         Date date;
         try{
-            date = new SimpleDateFormat("dd/MM/yyyy").parse(sdate);
+            date = new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(sdate);
         }catch(Exception e){
             date = new Date();
         }
