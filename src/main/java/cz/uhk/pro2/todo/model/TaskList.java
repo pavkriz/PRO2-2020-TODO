@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class TaskList {
+
     private List<Task> tasks = new ArrayList<>();
 
     public List<Task> getTasks() {
         //Vrátí nemodifikovatelný list
-        //return Collections.unmodifiableList(tasks);
-        return tasks;
+        return Collections.unmodifiableList(tasks);
     }
 
     public void addTask(Task t) {

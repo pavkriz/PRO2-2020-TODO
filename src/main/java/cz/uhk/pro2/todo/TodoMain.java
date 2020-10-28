@@ -47,15 +47,38 @@ public class TodoMain extends JFrame {
         btnRemove.addActionListener(e -> removeTask(tbl.getSelectedRow()));
         btnConvert.addActionListener(e -> saveAsJSON());
 
-        taskList.addTask(new Task("Naučit se Javu", new Date(), false));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        try {
+            Date d = sdf.parse("30.10.2020 13:00");
+            Date now = new Date();
+            taskList.addTask(new Task("Naučit se Javu", d, true));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         taskList.addTask(new Task("Jit se proběhnout", new Date(), false));
         taskList.addTask(new Task("Vyvařit roušku", new Date(), false));
+
+        Timer hodiny  = new Timer(1000, e -> setTitle(new Date().toString()));
+        hodiny.start();
+
+
+        // TODO 27.10.2020 DU4
+        // Zobrazovat dalsi sloupec s poctem dni, klolik zbyva do dokonceni ukolu (dueDate)
+        // Kazdych 10 sekund tento udaj aktualizovat
+
+        Timer casDokonceni = new Timer(10000, e -> {
+            for (int i = 0; i < taskList.getTasksCount(); i++)
+                tasksTableModel.fireTableCellUpdated(i,3);
+        });
+        casDokonceni.start();
 
         updateVariables();
     }
 
     private void addTask() {
-        // TODO 13.10. 2020 DU1
+        // TODO 13.10.2020 DU1
 
         f = new JFrame();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.mm HH:mm");
@@ -63,6 +86,7 @@ public class TodoMain extends JFrame {
         // zeptame se uzivatele
         String jmeno = JOptionPane.showInputDialog(f,"Zadej jméno úkolu");
         String datum = JOptionPane.showInputDialog(f,"Zadej konečné datum formátu dd.mm HH:mm");
+
         Date dueDate;
         try {
             // Přeformátujeme uživatel přidaný string na daný formát
@@ -71,10 +95,12 @@ public class TodoMain extends JFrame {
             taskList.addTask(new Task(jmeno, dueDate, false));
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            taskList.addTask(new Task());
+        }
+        finally {
+            updateVariables();
         }
 
-        updateVariables();
     }
 
     // TODO 20.10.2020 DU1
