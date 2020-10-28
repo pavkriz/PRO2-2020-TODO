@@ -20,7 +20,7 @@ public class TasksTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -32,7 +32,9 @@ public class TasksTableModel extends AbstractTableModel {
             case 1:
                 return task.getDueDateFormat("dd.MM.yyyy");
             case 2:
-                return task.isDone() ? "ANO" : "NE";
+                return task.isDone();
+            case 3:
+                return task.getRemainingTime();
             default:
                 return "NULL";
         }
@@ -47,8 +49,34 @@ public class TasksTableModel extends AbstractTableModel {
                 return "Datum splatnosti";
             case 2:
                 return "Je vyřešen";
+            case 3:
+                return "Kolik času zbývá";
             default:
                 return "NULL";
+        }
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        switch (columnIndex) {
+            case 2:
+                return Boolean.class;
+            default:
+                return Object.class;
+        }
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columnIndex == 2;
+        //return super.isCellEditable(rowIndex, columnIndex);
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        if(columnIndex == 2) { // isDone
+            Task task = taskList.getTasks().get(0);
+            task.setDone((Boolean)aValue);
         }
     }
 }

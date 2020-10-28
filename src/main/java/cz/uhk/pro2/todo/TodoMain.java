@@ -33,6 +33,8 @@ public class TodoMain extends JFrame {
 
     private final JTable tbl = new JTable(tasksTableModel);
 
+    private Timer updateTimer;
+
     public TodoMain() throws HeadlessException {
         setTitle("TODO aplikace");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -52,6 +54,13 @@ public class TodoMain extends JFrame {
             updateUnfinishedTasks();
         });
         btnSaveToFile.addActionListener(e -> saveToFile());
+        initializeTimers();
+    }
+
+    private void initializeTimers()
+    {
+        updateTimer = new Timer(10000, c -> tbl.updateUI());
+        updateTimer.start();
     }
 
     private void updateUnfinishedTasks() {
@@ -90,11 +99,11 @@ public class TodoMain extends JFrame {
         if (description == null) {
             return;
         }
-        String dateString = JOptionPane.showInputDialog(this, "Zadej do kdy se má splnit (formát DD.MM.YYYY)");
+        String dateString = JOptionPane.showInputDialog(this, "Zadej do kdy se má splnit (formát DD.MM.RRRR HH:MM)");
         if (dateString == null) {
             return;
         }
-        SimpleDateFormat dateParser = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat dateParser = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         Date date;
         try {
             date = dateParser.parse(dateString);
