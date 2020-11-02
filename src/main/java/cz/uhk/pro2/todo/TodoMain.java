@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.text.ParseException;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class TodoMain extends JFrame {
 
@@ -45,6 +48,18 @@ public class TodoMain extends JFrame {
         });
         btnSave.addActionListener(e -> saveTasks());
         pack();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        try {
+            Date d = sdf.parse("28.10.2020 13:00");
+            Date now = new Date();
+            long diffMilis = d.getTime() - now.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Timer timer  = new Timer(1000, e -> {
+            setTitle(new Date().toString());
+        });
+        timer.start();
     }
 
     private void addTask() {
