@@ -46,6 +46,7 @@ public class Task {
                 "description = '" + description + '\''+
                 ", dueDate = " + date +
                 ", done = " + done +
+                ", dueDate" +
                 '}';
     }
 }

@@ -1,7 +1,6 @@
 package cz.uhk.pro2.todo;
 
 import com.google.gson.*;
-import com.google.gson.internal.GsonBuildConfig;
 import cz.uhk.pro2.todo.gui.TaskTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
@@ -9,11 +8,9 @@ import cz.uhk.pro2.todo.model.TaskList;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 
 public class  TodoMain extends  JFrame{
 
@@ -29,10 +26,17 @@ public class  TodoMain extends  JFrame{
 
     private final GsonBuilder gsonBuilder = new GsonBuilder();
     private final Gson gson = gsonBuilder.create();
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
     public TodoMain() throws HeadlessException {
+
+        Timer timer  = new Timer(1000, e -> {
+            undoneLabel.setText(taskList.getUndoneTasks());
+            taskTableModel.fireTableDataChanged();
+        });
+        timer.start();
+
         loadJson();
-        undoneLabel.setText(taskList.getUndoneTasks());
 
         setTitle("TODO App");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -40,28 +44,19 @@ public class  TodoMain extends  JFrame{
         pnlNorth.add(btnRemove);
         pnlNorth.add(undoneLabel);
 
-
         add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(jTable), BorderLayout.CENTER);
         pack();
 
-        btnAdd.addActionListener(e -> {
-            try {
-                addTask();
-            } catch (ParseException parseException) {
-                parseException.printStackTrace();
-            }
-        });
+        btnAdd.addActionListener(e -> addTask());
 
-        btnRemove.addActionListener(e -> {
-            try{
-                taskList.removeTask(jTable.getSelectedRow());
-                jTable.addNotify();
-                save();
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        });
+        btnRemove.addActionListener(e -> removeTask());
+    }
+
+    private void removeTask() {
+        taskList.removeTask(jTable.getSelectedRow());
+        jTable.addNotify();
+        save();
     }
 
     private void loadJson() {
@@ -73,15 +68,15 @@ public class  TodoMain extends  JFrame{
 
             JsonArray companyList = (JsonArray) jsonObject.get("tasks");
 
-            for(int i = 0; i < companyList.size() ;i++){
+            for (int i = 0; i < companyList.size(); i++) {
                 taskList.addTask(
                         new Task(
-                                companyList.get(i).getAsJsonObject().get("description").toString().replace('"',' ').trim(),
+                                companyList.get(i).getAsJsonObject().get("description").toString().replace('"', ' ').trim(),
                                 dateParse(
-                                        companyList.get(i).getAsJsonObject().get("date").toString().replace('"',' ').trim()
+                                        companyList.get(i).getAsJsonObject().get("date").toString().replace('"', ' ').trim()
                                 ),
                                 Boolean.parseBoolean(
-                                        companyList.get(i).getAsJsonObject().get("done").toString().replace('"',' ').trim()
+                                        companyList.get(i).getAsJsonObject().get("done").toString().replace('"', ' ').trim()
                                 )
                         )
                 );
@@ -91,18 +86,22 @@ public class  TodoMain extends  JFrame{
         }
     }
 
-    private void addTask() throws ParseException {
-        //add Task to TaskList
-        taskList.addTask(new Task(
-                getDescription(), //Get Task Description
-                getDate(),  //Get Task Date
-                getIsDone())); //Get if Task is Done
+    private void addTask(){
+        try {
+            //add Task to TaskList
+            taskList.addTask(new Task(
+                    getDescription(), //Get Task Description
+                    getDate(),  //Get Task Date
+                    getIsDone())); //Get if Task is Done
 
-        //Notify on Table Change
-        jTable.addNotify();
-        undoneLabel.setText(taskList.getUndoneTasks());
-        //Save to JSON file
-        save();
+            //Notify on Table Change
+            jTable.addNotify();
+            undoneLabel.setText(taskList.getUndoneTasks());
+            //Save to JSON file
+            save();
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
     }
 
     private void save() {
@@ -118,20 +117,19 @@ public class  TodoMain extends  JFrame{
         return JOptionPane.showInputDialog("Put task description here.");
     }
 
-    private Date getDate() {
-        Date date = new Date();
-        String strDate = JOptionPane.showInputDialog("Write due date. (format: dd.mm.yyyy => example 01.01.2000)");
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        try {
-            date = dateFormat.parse(strDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
+    private Date getDate() throws ParseException {
+        String strDate = JOptionPane.showInputDialog("Write due date. (01.01.2000 12:30)");
+        Date date = null;
+        try{
+            date = sdf.parse(strDate);
+        }catch(Exception e){
+            getDate();
         }
         return date;
     }
 
     private Date dateParse(String strDate) throws ParseException {
-        Date date = new SimpleDateFormat("dd.MM.yyyy").parse(strDate);
+        Date date = sdf.parse(strDate);
         return date;
     }
 
