@@ -1,10 +1,6 @@
 package cz.uhk.pro2.todo.model;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Period;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -54,9 +50,13 @@ public class Task {
     }
 
     public String getRemainingTime() {
+        if (isDone()) {
+            return "Úkol vyřešen";
+        }
+
         long seconds = (getDueDate().getTime() - (new Date()).getTime()) / 1000;
         if(seconds < 0) {
-            seconds = 0;
+            return "Úkol nesplněn v čas";
         }
         int day = (int) TimeUnit.SECONDS.toDays(seconds);
         long hours = TimeUnit.SECONDS.toHours(seconds) - (day * 24);
