@@ -12,7 +12,7 @@ public class Task {
 
     public Task(String description, Date dueDate, boolean done) {
         this.description = description;
-        this.dueDate = dueDate;
+        this.dueDate = dueDate; // pro datum - tridu simpledateformat - umi zparsovat nejaky retezec na datum a cas - pripadne vyrobit datePicker - jako kalendar
         this.done = done;
     }
 
