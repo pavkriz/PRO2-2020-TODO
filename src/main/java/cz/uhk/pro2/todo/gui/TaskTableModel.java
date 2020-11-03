@@ -56,4 +56,28 @@ public class TaskTableModel extends AbstractTableModel {
     public void removeRow(int selectedRow) {
         fireTableRowsDeleted(selectedRow, selectedRow);
     }
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        switch (columnIndex) {
+            case 2: return Boolean.class;
+            default: return Object.class;
+        }
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        switch (columnIndex) {
+            case 2: return true;
+            default: return false;
+        }
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        if (columnIndex == 2) { // done
+            Task task = taskList.getTasks().get(rowIndex);
+            task.setDone((Boolean) aValue);
+        }
+    }
+
 }

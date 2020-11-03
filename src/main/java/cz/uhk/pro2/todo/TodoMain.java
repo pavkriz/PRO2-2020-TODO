@@ -21,6 +21,7 @@ public class  TodoMain extends  JFrame{
 
     private final TaskTableModel taskTableModel = new TaskTableModel(taskList);
     private final JTable jTable = new JTable(taskTableModel);
+    private final JLabel undoneLabel = new JLabel("Nesplněné Todo");
     private TaskTableModel tasksTableModel = new TaskTableModel(taskList);
     private JTable tbl = new JTable(tasksTableModel);
     private Label lblUndone = new Label("Počet tasku co jsi nedodělal: 0");
@@ -32,11 +33,18 @@ public class  TodoMain extends  JFrame{
         taskList.addTask(new Task("Jdi si zaběhat!", new Date(), false));
         taskList.addTask(new Task("Jdi spát", new Date(), false));
 
+        Timer timer  = new Timer(1000, e -> {
+            undoneLabel.setText(taskList.getUndoneTasks());
+            taskTableModel.fireTableDataChanged();
+        });
+        timer.start();
+
         setTitle("Aplikace mých TODO");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pnlNorth.add(btnAdd);
         pnlNorth.add(btnDel);
         pnlNorth.add(saveJSON);
+        pnlNorth.add(undoneLabel);
         btnDel.addActionListener(e -> delTask());
         saveJSON.addActionListener(e -> saveFile());
         add(pnlNorth, BorderLayout.NORTH);
@@ -61,6 +69,7 @@ public class  TodoMain extends  JFrame{
 
         //Notify on Table Change
         jTable.addNotify();
+        undoneLabel.setText(taskList.getUndoneTasks());
 
         for(int i =0; i<taskList.getTasks().size();i++){
             System.out.println(taskList.getTasks().get(i));
@@ -73,6 +82,7 @@ public class  TodoMain extends  JFrame{
             taskList.removeTask(taskList.getTasks().get(selected));
             tbl.clearSelection();
             tbl.addNotify();
+
 
             getUpdatedInfo();
             JOptionPane.showMessageDialog(null, "Řádek vymazán!");

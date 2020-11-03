@@ -1,7 +1,6 @@
 package cz.uhk.pro2.todo.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 public class TaskList {
@@ -20,15 +19,15 @@ public class TaskList {
         return Collections.unmodifiableList(tasks);
     }
 
-    public int getUndoneTasks(){
+    public String getUndoneTasks(){
         int count = 0;
         for(Task task : tasks){
-            if(task.isDone()){
+            if(!task.isDone()){
                 count++;
             }
         }
-
+        String str = String.valueOf(count);
         //tasks.stream().filter(task -> task.isDone());
-        return count;
+        return str;
     }
 }
