@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class TasksTableModel extends AbstractTableModel {
     private TaskList taskList;
-    private String[] columnNames = {"Úkol", "Splnit do", "Splněno", "Zbyva"};
+    private String[] columnNames = {"Úkol", "Splnit do", "Splněno", "Zbývá"};
 
     public TasksTableModel(TaskList taskList) {
         this.taskList = taskList;
@@ -64,6 +64,7 @@ public class TasksTableModel extends AbstractTableModel {
         if (columnIndex == 2) { // done
             Task task = taskList.getTasks().get(rowIndex);
             task.setDone((Boolean) aValue);
+            fireTableCellUpdated(rowIndex, columnIndex);
             //fireTableCellUpdated(rowIndex, 0); // informujeme tabulku, ze se zmenil i sloupec 0, pokud bychom v nem zobrazovali priznak DONE
         }
 

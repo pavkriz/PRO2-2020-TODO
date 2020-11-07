@@ -53,7 +53,7 @@ public class Task {
 
     public String getTimeLeft() {
         if(this.done) {
-            return "Splneno";
+            return "Splněno";
         }
 
         long diff = this.dueDate.getTime() - new Date().getTime();
@@ -61,14 +61,14 @@ public class Task {
             return "-";
         }
         if(diff <= 60000) {
-            return String.format("Zbyva %d sekund", TimeUnit.SECONDS.convert(diff, TimeUnit.MILLISECONDS));
+            return String.format("Zbývá %d sekund", TimeUnit.SECONDS.convert(diff, TimeUnit.MILLISECONDS));
         }
         if(diff <= 3600000) {
-            return String.format("Zbyva %d minut", TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS));
+            return String.format("Zbývá %d minut", TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS));
         }
         if(diff <= 86400000) {
-            return String.format("Zbyva %d hodin", TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS));
+            return String.format("Zbývá %d hodin", TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS));
         }
-        return String.format("Zbyva %d dni", TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
+        return String.format("Zbývá %d dní", TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
     }
 }
