@@ -10,7 +10,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TodoMain extends JFrame {
     private JButton btnAdd = new JButton("Přidat úkol");
@@ -38,11 +43,24 @@ public class TodoMain extends JFrame {
         pack();
         setLocationRelativeTo(null);
         btnAdd.addActionListener(e -> addTask());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        try {
+            Date d = sdf.parse("28.10.2020 13:00");
+            Date now = new Date();
+            long diffMilis = d.getTime() - now.getTime();
+            taskList.addTask(new Task("Naučit se Javu", d, true));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         btnRemove.addActionListener(e -> removeTask());
         btnExport.addActionListener(e -> exportToJson());
         taskList.addTask(new Task("Naučit se Javu", new Date(), false));
         taskList.addTask(new Task("Jit se proběhnout", new Date(), false));
         taskList.addTask(new Task("Vyvařit roušku", new Date(), false));
+        Timer timer  = new Timer(1000, e -> {
+            setTitle(new Date().toString());
+        });
+        timer.start();
         updateUndoneTasksLabel();
         fileChooser.setFileFilter(new FileNameExtensionFilter("json file", "json"));
         fileChooser.setSelectedFile(new File("tasks.json"));
