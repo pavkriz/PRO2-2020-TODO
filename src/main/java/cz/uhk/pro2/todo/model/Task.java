@@ -1,6 +1,7 @@
 package cz.uhk.pro2.todo.model;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Task {
 
@@ -48,5 +49,26 @@ public class Task {
                 ", dueDate=" + dueDate +
                 ", done=" + done +
                 '}';
+    }
+
+    public String getTimeLeft() {
+        if(this.done) {
+            return "Splneno";
+        }
+
+        long diff = this.dueDate.getTime() - new Date().getTime();
+        if(diff <= 0) {
+            return "-";
+        }
+        if(diff <= 60000) {
+            return String.format("Zbyva %d sekund", TimeUnit.SECONDS.convert(diff, TimeUnit.MILLISECONDS));
+        }
+        if(diff <= 3600000) {
+            return String.format("Zbyva %d minut", TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS));
+        }
+        if(diff <= 86400000) {
+            return String.format("Zbyva %d hodin", TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS));
+        }
+        return String.format("Zbyva %d dni", TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
     }
 }

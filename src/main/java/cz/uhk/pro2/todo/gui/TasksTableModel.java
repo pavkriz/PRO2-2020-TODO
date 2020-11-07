@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class TasksTableModel extends AbstractTableModel {
     private TaskList taskList;
-    private String[] columnNames = {"Úkol", "Splnit do", "Splněno"};
+    private String[] columnNames = {"Úkol", "Splnit do", "Splněno", "Zbyva"};
 
     public TasksTableModel(TaskList taskList) {
         this.taskList = taskList;
@@ -23,7 +23,7 @@ public class TasksTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -33,6 +33,7 @@ public class TasksTableModel extends AbstractTableModel {
             case 0: return task.getDescription(); // + (task.isDone() ? " DONE" : ""); // alternativne zobrazujeme jeste priznak DONE
             case 1: return task.getDueDate();
             case 2: return task.isDone();
+            case 3: return task.getTimeLeft();
         }
         return ""; // tohle by se nemelo volat
     }
@@ -64,6 +65,13 @@ public class TasksTableModel extends AbstractTableModel {
             Task task = taskList.getTasks().get(rowIndex);
             task.setDone((Boolean) aValue);
             //fireTableCellUpdated(rowIndex, 0); // informujeme tabulku, ze se zmenil i sloupec 0, pokud bychom v nem zobrazovali priznak DONE
+        }
+
+    }
+
+    public void updateDueDateColumn() {
+        for (int i = 0; i < this.taskList.getTasks().size(); i++) {
+            this.fireTableCellUpdated(i, 3);
         }
     }
 }

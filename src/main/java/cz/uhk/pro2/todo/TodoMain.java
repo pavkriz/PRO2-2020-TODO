@@ -1,10 +1,12 @@
 package cz.uhk.pro2.todo;
 
+import com.google.gson.Gson;
 import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -61,6 +63,12 @@ public class TodoMain extends JFrame {
             setTitle(new Date().toString());
         });
         timer.start();
+        tasksTableModel.addTableModelListener(e -> {
+            System.out.println(e.getColumn());
+            if(e.getColumn() == 3) {
+                updateUndoneTasksLabel();
+            }
+        });
         updateUndoneTasksLabel();
         fileChooser.setFileFilter(new FileNameExtensionFilter("json file", "json"));
         fileChooser.setSelectedFile(new File("tasks.json"));
