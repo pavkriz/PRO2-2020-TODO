@@ -29,7 +29,7 @@ public class TasksTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
 
         Task task = taskList.getTasks().get(rowIndex);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");
 
         switch (columnIndex) {
             case 0: return task.getDescription();
