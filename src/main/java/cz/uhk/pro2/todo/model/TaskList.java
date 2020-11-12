@@ -25,6 +25,8 @@ public class TaskList {
         tasks.remove(position);
     }
 
+    public void removeAll() { tasks = null; }
+
     public int getTasksCount(){
         return tasks.size();
     }

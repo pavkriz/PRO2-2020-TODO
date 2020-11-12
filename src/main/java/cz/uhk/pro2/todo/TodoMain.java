@@ -174,6 +174,7 @@ public class TodoMain extends JFrame {
             Gson gson = new Gson();
             Reader reader = new FileReader("SeznamUkolu.json");
             taskList = gson.fromJson(reader, TaskList.class);
+            tasksTableModel.setTaskList(taskList);
             reader.close();
 
             updateVariables();
@@ -212,6 +213,9 @@ public class TodoMain extends JFrame {
                                      new FileInputStream("SeznamUkolu.csv"), StandardCharsets.UTF_8))) {
             String s;
             int i = 1;
+            taskList.removeAll();
+            taskList = new TaskList();
+
             while ((s = r.readLine()) != null) {
                 // precteme jeden radek a vyrobime z nej instanci osoby a pridame ji do seznamu
                 String[] cols = s.split(";");
@@ -229,6 +233,8 @@ public class TodoMain extends JFrame {
                 }
                 i++;
             }
+            tasksTableModel.setTaskList(taskList);
+
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
