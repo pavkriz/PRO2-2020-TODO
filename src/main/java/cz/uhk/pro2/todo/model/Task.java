@@ -1,5 +1,6 @@
 package cz.uhk.pro2.todo.model;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -55,7 +56,7 @@ public class Task {
         }
 
         long seconds = (getDueDate().getTime() - (new Date()).getTime()) / 1000;
-        if(seconds < 0) {
+        if (seconds < 0) {
             return "Úkol nesplněn v čas";
         }
         int day = (int) TimeUnit.SECONDS.toDays(seconds);
@@ -68,5 +69,10 @@ public class Task {
     @Override
     public String toString() {
         return "description: " + description + " dueDate: " + dueDate + " done: " + done;
+    }
+
+    public Object[] toCSVString() {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        return new Object[]{description, df.format(dueDate), done};
     }
 }

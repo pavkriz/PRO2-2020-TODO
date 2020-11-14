@@ -27,4 +27,15 @@ public class TaskList {
     public int getTasksCount() {
         return tasks.size();
     }
+
+    public void clear() {
+        tasks.clear();
+    }
+
+    public void add(TaskList taskList) {
+        if (taskList == null) {
+            return;
+        }
+        tasks.addAll(taskList.getTasks());
+    }
 }
