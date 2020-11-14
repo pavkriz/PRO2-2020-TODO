@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class TasksTableModel extends AbstractTableModel {
+    public void setTaskList(TaskList taskList) {
+        this.taskList = taskList;
+    }
+
     private TaskList taskList;
 
     public TasksTableModel(TaskList taskList) {

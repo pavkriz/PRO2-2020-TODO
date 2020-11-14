@@ -21,7 +21,7 @@ public class TaskList {
         tasks.remove(t);
     }
 
-    public int getUndoneTasks(){
+    public int getUndoneTasks() {
         int utasks = 0;
         for (Task task : tasks) {
             if (!task.isDone()) {
@@ -29,5 +29,9 @@ public class TaskList {
             }
         }
         return utasks;
+    }
+
+    public void deleteTasks() {
+        tasks.clear();
     }
 }
