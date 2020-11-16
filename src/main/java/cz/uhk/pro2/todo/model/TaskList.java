@@ -18,6 +18,9 @@ public class TaskList {
     public void removeTask(Task t) {
         tasks.remove(t);
     }
+    public void setTasks(List<Task> list){
+        this.tasks=list;
+    }
 
     public int getUndoneTasksCount() {
         int pocet=0;
