@@ -21,7 +21,9 @@ public class TaskList {
     public void setTasks(List<Task> list){
         this.tasks=list;
     }
-
+    public int getSize(){
+        return tasks.size();
+    }
     public int getUndoneTasksCount() {
         int pocet=0;
         for(Task t : tasks){
