@@ -6,6 +6,7 @@ import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
 import java.text.ParseException;
@@ -18,7 +19,9 @@ public class  TodoMain extends  JFrame{
 
     private final JButton btnAdd = new JButton("Add Task");
     private final JButton btnRemove = new JButton("Remove Task");
+    private final JButton btnLoadCSV = new JButton("Load CSV file");
     private final JPanel pnlNorth = new JPanel();
+    private final JFrame frame = new JFrame();
 
     private final TaskTableModel taskTableModel = new TaskTableModel(taskList);
     private final JTable jTable = new JTable(taskTableModel);
@@ -43,6 +46,7 @@ public class  TodoMain extends  JFrame{
         pnlNorth.add(btnAdd);
         pnlNorth.add(btnRemove);
         pnlNorth.add(undoneLabel);
+        pnlNorth.add(btnLoadCSV);
 
         add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(jTable), BorderLayout.CENTER);
@@ -51,6 +55,8 @@ public class  TodoMain extends  JFrame{
         btnAdd.addActionListener(e -> addTask());
 
         btnRemove.addActionListener(e -> removeTask());
+
+        btnLoadCSV.addActionListener(e -> loadCSV());
     }
 
     private void removeTask() {
@@ -86,6 +92,74 @@ public class  TodoMain extends  JFrame{
         }
     }
 
+    private void loadCSV() {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filterJson = new FileNameExtensionFilter("Json file", "json");
+        FileNameExtensionFilter filterCSV = new FileNameExtensionFilter("CSV file", "csv");
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(filterJson);
+        fileChooser.addChoosableFileFilter(filterCSV);
+        fileChooser.setDialogTitle("Select CSV file.");
+        int userSelection = fileChooser.showOpenDialog(frame);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToLoad = getFileExtension(fileChooser);
+            if (fileToLoad.getAbsolutePath().endsWith(".csv")) {
+                try {
+                    BufferedReader bfr = new BufferedReader(new FileReader(fileToLoad));
+
+                    String r;
+                    int row = 0;
+                    taskList.deleteAllTasks();
+                    while ((r = bfr.readLine()) != null) {
+                        String[] columns = r.split(";");
+                        if (columns.length == 3) {
+                            Date dueDate = new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(columns[1]);
+                            taskList.addTask(new Task(columns[0], dueDate, Boolean.parseBoolean(columns[2])));
+                        } else {
+                            System.out.println("Bad column count on row #" + row);
+                        }
+                        row++;
+                    }
+                } catch (IOException | ParseException e) {
+                    e.printStackTrace();
+                }
+                JOptionPane.showMessageDialog(null, "Soubor načten: " + fileToLoad.getAbsolutePath());
+            }
+            if (fileToLoad.getAbsolutePath().endsWith(".json")) {
+                try {
+                    Gson gson = new Gson();
+                    taskList.deleteAllTasks();
+                    BufferedReader bfr = new BufferedReader(new FileReader(fileToLoad));
+                    TaskList newTaskList = gson.fromJson(bfr, TaskList.class);
+                    for (Task t : newTaskList.getTasks()) {
+                        taskList.addTask(t);
+                    }
+                    bfr.close();
+                    JOptionPane.showMessageDialog(null, "Soubor načten: " + fileToLoad.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        jTable.addNotify();
+    }
+
+    private File getFileExtension(JFileChooser fileChooser) {
+        File file = fileChooser.getSelectedFile();
+        if (fileChooser.getFileFilter() instanceof FileNameExtensionFilter) {
+            String[] extensions = ((FileNameExtensionFilter) fileChooser.getFileFilter()).getExtensions();
+            String nameLower = file.getName().toLowerCase();
+            for (String ext : extensions) {
+                if (nameLower.endsWith('.' + ext.toLowerCase())) {
+                    return file;
+                }
+            }
+            // if not, append the first extension from the selected filter
+            file = new File(file.toString() + '.' + extensions[0]);
+        }
+        return file;
+    }
+
     private void addTask(){
         try {
             //add Task to TaskList
@@ -105,11 +179,49 @@ public class  TodoMain extends  JFrame{
     }
 
     private void save() {
-        gsonBuilder.setPrettyPrinting();
+        /*gsonBuilder.setPrettyPrinting();
         try (Writer file = new FileWriter("taskList.json")) {
             gson.toJson(taskList,file);
         } catch (IOException e) {
             e.printStackTrace();
+        }*/
+
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filterJson = new FileNameExtensionFilter("Json file", "json");
+        FileNameExtensionFilter filterCSV = new FileNameExtensionFilter("CSV file", "csv");
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(filterJson);
+        fileChooser.addChoosableFileFilter(filterCSV);
+        fileChooser.setDialogTitle("Dialog k uložení souboru");
+        int userSelection = fileChooser.showSaveDialog(frame);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = getFileExtension(fileChooser);
+            if (fileToSave.getAbsolutePath().endsWith(".json")) {
+                try {
+                    Gson gson = new Gson();
+                    FileWriter fileWriter = new FileWriter(fileToSave);
+                    gson.toJson(taskList, fileWriter);
+                    fileWriter.flush();
+                    fileWriter.close();
+                    JOptionPane.showMessageDialog(null, "Soubor uložen: " + fileToSave.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fileToSave.getAbsolutePath().endsWith(".csv")) {
+                try {
+                    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileToSave));
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                    for (Task tsk : taskList.getTasks()) {
+                        bufferedWriter.write(tsk.getDescription() + ";" + simpleDateFormat.format(tsk.getDate()) + ";" + tsk.isDone() + "\n");
+                    }
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                JOptionPane.showMessageDialog(null, "Soubor uložen: " + fileToSave.getAbsolutePath());
+            }
         }
     }
 
