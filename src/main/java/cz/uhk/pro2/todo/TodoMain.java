@@ -1,22 +1,18 @@
 package cz.uhk.pro2.todo;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.DateFormat;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TodoMain extends JFrame {
     private JButton btnAdd = new JButton("Přidat úkol");
@@ -28,15 +24,17 @@ public class TodoMain extends JFrame {
 
 
     private JPanel pnlNorth = new JPanel();
+    //private TaskList taskList = new TaskList();
+    private TaskDao taskDao = new TaskDao();
+    private TasksTableModel tasksTableModel = new TasksTableModel(taskDao);
     private JPanel pnlSouth = new JPanel();
 
     private TaskList taskList = new TaskList();
-    private TasksTableModel tasksTableModel = new TasksTableModel(taskList);
+    //private TasksTableModel tasksTableModel = new TasksTableModel(taskList);
     private JTable tbl = new JTable(tasksTableModel);
     private JFrame f;
 
-    private JLabel lblUndoneTasks = new JLabel("");
-
+    private JLabel lblUndoneTasks = new JLabel("Počet nesplněných úkolů: ");
 
     public TodoMain() throws HeadlessException {
         setTitle("TODO app");
@@ -137,6 +135,8 @@ public class TodoMain extends JFrame {
 
     public void updateVariables() {
         // notifikujeme tabulku, ze doslo ze zmene dat
+        //taskDao.save(task);
+        tasksTableModel.reloadData();
         tasksTableModel.fireTableDataChanged();
         // Změní label s množstvím nesplněných úkolů
         lblUndoneTasks.setText("Nesplněné úkoly: " + taskList.getUndoneTasksCount());
@@ -242,9 +242,12 @@ public class TodoMain extends JFrame {
 
     public static void main(String[] args) {
         //System.out.println("Hello!!!");
-        SwingUtilities.invokeLater(() -> {
-            TodoMain window = new TodoMain();
-            window.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                TodoMain window = new TodoMain();
+                window.setVisible(true);
+            }
         });
     }
 }
