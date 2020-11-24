@@ -2,6 +2,7 @@ package cz.uhk.pro2.todo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
@@ -36,9 +37,11 @@ public class TodoMain extends JFrame {
 
     private final JPanel pnlNorth = new JPanel();
 
+    private TaskDao taskDao = new TaskDao();
+
     private TaskList taskList = new TaskList();
 
-    private final TasksTableModel tasksTableModel = new TasksTableModel(taskList);
+    private final TasksTableModel tasksTableModel = new TasksTableModel(taskDao);
 
     private final JTable tbl = new JTable(tasksTableModel);
 
@@ -52,7 +55,7 @@ public class TodoMain extends JFrame {
         pnlNorth.add(lblUnfinishedTasks);
         add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(tbl), BorderLayout.CENTER);
-        add(btnSaveToFile, BorderLayout.SOUTH);
+        //add(btnSaveToFile, BorderLayout.SOUTH);
         pack();
         btnAddTask.addActionListener(e -> {
             addTask();
@@ -88,7 +91,11 @@ public class TodoMain extends JFrame {
     private void removeHighlightedTask() {
         int selectedRow = tbl.getSelectedRow();
         if (selectedRow != -1) {
-            taskList.removeTask(selectedRow);
+            Task selectedTask = tasksTableModel.getByIndex(selectedRow);
+            tasksTableModel.deleteTask(selectedTask);
+            //taskList.removeTask(selectedRow);
+           // Date date1=new SimpleDateFormat("dd/MM/yyyy").parse((String)tbl.getValueAt(selectedRow, 1));
+            //tasksTableModel.deleteTask((String)tbl.getValueAt(selectedRow, 0), new java.sql.Date(().getTime()), (boolean)tbl.getValueAt(selectedRow, 2));
         }
         tbl.updateUI();
     }
@@ -168,7 +175,8 @@ public class TodoMain extends JFrame {
                         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
                         Date dueDate = df.parse(dueDateString);
                         boolean isDone = Boolean.parseBoolean(csvRecord.get("Done"));
-                        taskList.addTask(new Task(description, dueDate, isDone));
+                        tasksTableModel.addTask(new Task(description, dueDate, isDone));
+                        //taskList.addTask();
                     }
                 } catch (IOException | ParseException e) {
                     e.printStackTrace();
@@ -209,7 +217,8 @@ public class TodoMain extends JFrame {
         boolean isFinished = isFinishedObject.equals("ANO");
 
         Task task = new Task(description, date, isFinished);
-        taskList.addTask(task);
+        //taskList.addTask(task);
+        tasksTableModel.addTask(task);
         tbl.updateUI();
     }
 

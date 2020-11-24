@@ -1,16 +1,21 @@
 package cz.uhk.pro2.todo.gui;
 
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.Date;
 
 public class TasksTableModel extends AbstractTableModel {
 
-    private final TaskList taskList;
+    private TaskList taskList;
 
-    public TasksTableModel(TaskList taskList) {
-        this.taskList = taskList;
+    private final TaskDao taskDao;
+
+    public TasksTableModel(TaskDao taskDao) {
+        this.taskDao = taskDao;
+        reloadData();
     }
 
     @Override
@@ -69,14 +74,39 @@ public class TasksTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return columnIndex == 2;
-        //return super.isCellEditable(rowIndex, columnIndex);
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        if(columnIndex == 2) { // isDone
-            Task task = taskList.getTasks().get(0);
-            task.setDone((Boolean)aValue);
+        if (columnIndex == 2) { // isDone
+            Task task = taskList.getTasks().get(rowIndex);
+            task.setDone((Boolean) aValue);
+            taskDao.save(task);
         }
+    }
+
+    public void reloadData() {
+        taskList = taskDao.findAll();
+    }
+
+    public void addTask(Task t) {
+        taskDao.save(t);
+        taskList.addTask(t);
+    }
+
+    public void deleteTask(Task t) {
+        taskDao.delete(t);
+        taskList.removeTask(t);
+    }
+
+    public void deleteTask(String description, Date dueDate, boolean isDone) {
+        Task task = taskList.getByData(description, dueDate, isDone);
+        if (task != null) {
+            deleteTask(task);
+        }
+    }
+
+    public Task getByIndex(int index) {
+        return taskList.getByIndex(index);
     }
 }

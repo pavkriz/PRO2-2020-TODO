@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Task {
+    private long id;
     private String description;
     private Date dueDate;
     private boolean done;
@@ -15,6 +16,11 @@ public class Task {
         setDescription(description);
         setDueDate(dueDate);
         setDone(done);
+    }
+
+    public Task(long id, String description, Date dueDate, boolean done) {
+        this(description, dueDate, done);
+        setId(id);
     }
 
     public Task() {
@@ -50,6 +56,14 @@ public class Task {
         this.done = done;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getRemainingTime() {
         if (isDone()) {
             return "Úkol vyřešen";
@@ -68,7 +82,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "description: " + description + " dueDate: " + dueDate + " done: " + done;
+        return "id: " + id + "description: " + description + " dueDate: " + dueDate + " done: " + done;
     }
 
     public Object[] toCSVString() {

@@ -15,7 +15,7 @@ public class TaskListTest {
         assertEquals(t, l.getTasks().get(0));
     }
 
-
+/*
     @Test
     public void testGetUndoneTasksCount() {
         TaskList l = new TaskList();
@@ -28,4 +28,6 @@ public class TaskListTest {
         l.addTask(t3);
         assertEquals(2, l.getUndoneTasksCount());
     }
+
+ */
 }
