@@ -1,63 +1,49 @@
 package cz.uhk.pro2.todo.gui;
 
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
+
 import javax.swing.table.AbstractTableModel;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 
 public class TasksTableModel extends AbstractTableModel {
+    private TaskDao taskDao;
+    private List<Task> tasks; // docasne uloziste tasku, abychom se porad neptali DB
 
-    private TaskList taskList;
-
-    public TasksTableModel(TaskList taskList) {
-        this.taskList = taskList;
+    public TasksTableModel(TaskDao taskDao) {
+        this.taskDao = taskDao;
+        reloadData();
     }
 
     @Override
     public int getRowCount() {
-        return taskList.getTasks().size();
+        return tasks.size();
     }
+
+    // TODO DU 27.10.2020 Zobrazovat dalsi sloupec s poctem dni, klolik zbyva do dokonceni ukolu (dueDate)
+    //               + Kazdych 10 sekund tento udaj aktualizovat
 
     @Override
     public int getColumnCount() {
-        return 4;
+        return 3;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-
-        Task task = taskList.getTasks().get(rowIndex);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");
-
+        Task task = tasks.get(rowIndex);
         switch (columnIndex) {
-            case 0: return task.getDescription();
-            case 1: return sdf.format(task.getDueDate());
+            case 0: return task.getDescription(); // + (task.isDone() ? " DONE" : ""); // alternativne zobrazujeme jeste priznak DONE
+            case 1: return task.getDueDate();
             case 2: return task.isDone();
-            case 3:
-                Date dueDate = task.getDueDate();
-                Date nowDate = new Date();
-
-                float difDate = dueDate.getTime() - nowDate.getTime();
-
-                return (int) (difDate / (1000*60*60*24));
-
-
         }
         return ""; // tohle by se nemelo volat
     }
 
     @Override
     public String getColumnName(int column) {
-        // TODO DU2
-        // Přes switch se rozhodne, který sloupec bude pojmenován.
-        switch (column) {
-            case 0: return "Popis";
-            case 1: return "Platnost";
-            case 2: return "Splnění";
-            case 3: return "Zbývající čas (dny)";
-        }
-        return "";
+        // TODO 13.10.2020 DU2
+        return "Nadpis";
     }
 
     @Override
@@ -79,13 +65,16 @@ public class TasksTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if (columnIndex == 2) { // done
-            Task task = taskList.getTasks().get(rowIndex);
+            Task task = tasks.get(rowIndex);
             task.setDone((Boolean) aValue);
-            //fireTableCellUpdated(rowIndex, 0);
+            // ulozit do DB zmeneny zaznam
+            taskDao.save(task);
+            //fireTableCellUpdated(rowIndex, 0); // informujeme tabulku, ze se zmenil i sloupec 0, pokud bychom v nem zobrazovali priznak DONE
         }
     }
 
-    public void setTaskList(TaskList taskList) {
-        this.taskList = taskList;
+    public void reloadData() {
+        tasks = taskDao.findAll(); // vytahneme data z DB
+        fireTableDataChanged();
     }
 }
