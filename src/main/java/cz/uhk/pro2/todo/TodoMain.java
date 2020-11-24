@@ -1,5 +1,6 @@
 package cz.uhk.pro2.todo;
 
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
@@ -16,8 +17,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TodoMain extends JFrame {
     private JButton btnAdd = new JButton("Přidat úkol");
     private JPanel pnlNorth = new JPanel();
-    private TaskList taskList = new TaskList();
-    private TasksTableModel tasksTableModel = new TasksTableModel(taskList);
+    //private TaskList taskList = new TaskList();
+    private TaskDao taskDao = new TaskDao();
+    private TasksTableModel tasksTableModel = new TasksTableModel(taskDao);
     private JTable tbl = new JTable(tasksTableModel);
     private JLabel lblUndoneTasks = new JLabel("Počet nesplněných úkolů: ");
 
@@ -30,21 +32,21 @@ public class TodoMain extends JFrame {
         add(new JScrollPane(tbl), BorderLayout.CENTER);
         pack();
         btnAdd.addActionListener(e -> addTask());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        try {
-            Date d = sdf.parse("28.10.2020 13:00");
-            Date now = new Date();
-            long diffMilis = d.getTime() - now.getTime();
-            taskList.addTask(new Task("Naučit se Javu", d, true));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        taskList.addTask(new Task("Jit se proběhnout", new Date(), false));
-        taskList.addTask(new Task("Vyvařit roušku", new Date(), false));
-        Timer timer  = new Timer(1000, e -> {
-            setTitle(new Date().toString());
-        });
-        timer.start();
+//        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+//        try {
+//            Date d = sdf.parse("28.10.2020 13:00");
+//            Date now = new Date();
+//            long diffMilis = d.getTime() - now.getTime();
+//            taskList.addTask(new Task("Naučit se Javu", d, true));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        taskList.addTask(new Task("Jit se proběhnout", new Date(), false));
+//        taskList.addTask(new Task("Vyvařit roušku", new Date(), false));
+//        Timer timer  = new Timer(1000, e -> {
+//            setTitle(new Date().toString());
+//        });
+//        timer.start();
     }
 
     private void addTask() {
@@ -52,6 +54,8 @@ public class TodoMain extends JFrame {
         // zeptame se uzivatele
         // vytvorime task a pridame do seznamu
         // notifikujeme tabulku, ze doslo ze zmene dat
+        //taskDao.save(task);
+        tasksTableModel.reloadData();
     }
 
     // TODO 20.10.2020 DU1
