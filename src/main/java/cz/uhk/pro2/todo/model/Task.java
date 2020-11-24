@@ -8,6 +8,9 @@ public class Task {
     private boolean done;
 
     public Task() {
+        description = "tmp";
+        dueDate = new Date();
+        done = false;
     }
 
     public Task(String description, Date dueDate, boolean done) {

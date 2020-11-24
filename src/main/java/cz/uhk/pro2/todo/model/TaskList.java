@@ -5,9 +5,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class TaskList {
+
     private List<Task> tasks = new ArrayList<>();
 
     public List<Task> getTasks() {
+        //Vrátí nemodifikovatelný list
         return Collections.unmodifiableList(tasks);
     }
 
@@ -19,9 +21,22 @@ public class TaskList {
         tasks.remove(t);
     }
 
+    public void removeTask(int position) {
+        tasks.remove(position);
+    }
+
+    public void removeAll() { tasks = null; }
+
+    public int getTasksCount(){
+        return tasks.size();
+    }
+
     public int getUndoneTasksCount() {
         // lambda
         // return tasks.stream().filter(t -> !t.isDone()).count();
-        return 0; // TODO
+
+        int undoneTaskCount = 0;
+        for (Task task : tasks) if (!task.isDone()) undoneTaskCount++;
+        return undoneTaskCount;
     }
 }
