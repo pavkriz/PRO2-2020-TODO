@@ -30,4 +30,7 @@ public class TaskList {
         //tasks.stream().filter(task -> task.isDone());
         return str;
     }
+    public void deleteTasks() {
+        tasks.clear();
+    }
 }
