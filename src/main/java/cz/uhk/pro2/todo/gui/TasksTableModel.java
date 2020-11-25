@@ -6,6 +6,7 @@ import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class TasksTableModel extends AbstractTableModel {
@@ -73,34 +74,11 @@ public class TasksTableModel extends AbstractTableModel {
         }
     }
 
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        switch (columnIndex) {
-            case 2: return true;
-            default: return false;
-        }
+    public void reloadData() {
+        tasks = taskDao.findAll(); // vytahneme data z DB
+        fireTableDataChanged();
     }
 
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        if (columnIndex == 2) { // done
-            Task task = taskList.getTasks().get(rowIndex);
-            task.setDone((Boolean) aValue);
-            //fireTableCellUpdated(rowIndex, 0); // informujeme tabulku, ze se zmenil i sloupec 0, pokud bychom v nem zobrazovali priznak DONE
-        }
-    }
-
-    public void setTaskList(TaskList taskList) {
-        this.taskList = taskList;
-    }
-
-    @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        switch (columnIndex) {
-            case 2: return Boolean.class;
-            default: return Object.class;
-        }
-    }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -121,8 +99,9 @@ public class TasksTableModel extends AbstractTableModel {
         }
     }
 
-    public void reloadData() {
-        tasks = taskDao.findAll(); // vytahneme data z DB
-        fireTableDataChanged();
+    /*
+    public void setTaskList(TaskList taskList) {
+        this.taskList = taskList;
     }
+     */
 }

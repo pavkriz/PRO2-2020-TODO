@@ -1,5 +1,6 @@
 package cz.uhk.pro2.todo;
 
+import com.google.gson.Gson;
 import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
@@ -9,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -59,25 +62,23 @@ public class TodoMain extends JFrame {
 
         btnAdd.addActionListener(e -> addTask());
         btnRemove.addActionListener(e -> removeTask(tbl.getSelectedRow()));
-
+        /*
         btnToJSON.addActionListener(e -> saveJSON());
         btnFromJSON.addActionListener(e -> loadJSON());
         btnToCSV.addActionListener(e -> saveCSV());
         btnFromCSV.addActionListener(e-> loadCSV());
+         */
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");
         try {
             Date d = sdf.parse("30.10.20 13:00");
-            Date now = new Date();
             taskList.addTask(new Task("Naučit se Javu", d, true));
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        } catch (ParseException e) {  e.printStackTrace(); }
 
         taskList.addTask(new Task("Jit se proběhnout", new Date(), false));
         taskList.addTask(new Task("Vyvařit roušku", new Date(), false));
 
+        /*
         Timer hodiny  = new Timer(1000, e -> setTitle(new Date().toString()));
         hodiny.start();
 
@@ -91,6 +92,7 @@ public class TodoMain extends JFrame {
                 tasksTableModel.fireTableCellUpdated(i,3);
         });
         casDokonceni.start();
+         */
 
         updateVariables();
     }
@@ -141,7 +143,7 @@ public class TodoMain extends JFrame {
         // Změní label s množstvím nesplněných úkolů
         lblUndoneTasks.setText("Nesplněné úkoly: " + taskList.getUndoneTasksCount());
     }
-
+    /*
     // TODO 20.10.2020 DU3
     // Tlačítko na uložení seznamu tasku do JSON souboru
     // Předem definovaný název json v projektu
@@ -239,7 +241,7 @@ public class TodoMain extends JFrame {
             e.printStackTrace();
         }
     }
-
+    */
     public static void main(String[] args) {
         //System.out.println("Hello!!!");
         SwingUtilities.invokeLater(new Runnable() {

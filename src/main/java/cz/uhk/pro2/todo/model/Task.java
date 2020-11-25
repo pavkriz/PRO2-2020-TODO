@@ -12,6 +12,7 @@ public class Task {
         description = "tmp";
         dueDate = new Date();
         done = false;
+        id = 0;
     }
 
     public Task(String description, Date dueDate, boolean done) {

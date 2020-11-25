@@ -7,12 +7,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDao {
+
     public void save(Task task) {
         // TODO DU 24.11., pouzivejte parametry v prepared statementu ( ?, ?)
-        if (task.getId() == 0) {
-            // TODO INSERT
-        } else {
-            // TODO UPDATE
+        try (Connection con = openConnection()) {
+
+            PreparedStatement p;
+            if (task.getId() == 0) {
+                // TODO INSERT
+                p = con.prepareStatement("INSERT INTO task (id, description, due_date, done) VALUES " +
+                        "(DEFAULT," + task.getDescription() + "," + task.getDueDate() + "," + task.isDone() + ")");
+                p.executeQuery();
+            } else {
+                // TODO UPDATE
+                p = con.prepareStatement("UPDATE TABLE task SET Description=" + task.getDescription() +
+                        ", due_date="+ task.getDueDate() +
+                        ", done=" + task.isDone() +
+                        " WHERE id=" + task.getId());
+                p.executeQuery();
+            }
+
+        } catch (SQLException throwables) {
+            throw new DbException("Error during DB operation", throwables); // obalime puvodni vyjimku nasi runtime vyjimkou
         }
     }
 
@@ -22,11 +38,18 @@ public class TaskDao {
 
     public void delete(long id) {
         // TODO DU 24.11.
+        try (Connection con = openConnection()) {
+            PreparedStatement p = con.prepareStatement("DELETE FROM test where id=" + id);
+            p.executeQuery();
+
+        } catch (SQLException throwables) {
+            throw new DbException("Error during DB operation", throwables); // obalime puvodni vyjimku nasi runtime vyjimkou
+        }
     }
 
     public List<Task> findAll() {
         try (Connection con = openConnection()) {
-            PreparedStatement s = con.prepareStatement("SELECT id, description, due_date, done FROM task2 ORDER BY id");
+            PreparedStatement s = con.prepareStatement("SELECT id, description, due_date, done FROM task ORDER BY id");
             ResultSet rs = s.executeQuery();
             List<Task> tasks = new ArrayList<>();
             while (rs.next()) {
@@ -41,6 +64,6 @@ public class TaskDao {
     }
 
     private Connection openConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/test","root", "my-secret-pw");
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306/test?serverTimezone=UTC","root", "Vojta131Vojta131");
     }
 }
