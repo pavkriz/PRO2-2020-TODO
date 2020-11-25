@@ -27,7 +27,7 @@ public class TodoMain extends JFrame {
 
 
     private JPanel pnlNorth = new JPanel();
-    //private TaskList taskList = new TaskList();
+
     private TaskDao taskDao = new TaskDao();
     private TasksTableModel tasksTableModel = new TasksTableModel(taskDao);
     private JPanel pnlSouth = new JPanel();
@@ -62,12 +62,11 @@ public class TodoMain extends JFrame {
 
         btnAdd.addActionListener(e -> addTask());
         btnRemove.addActionListener(e -> removeTask(tbl.getSelectedRow()));
-        /*
         btnToJSON.addActionListener(e -> saveJSON());
         btnFromJSON.addActionListener(e -> loadJSON());
         btnToCSV.addActionListener(e -> saveCSV());
         btnFromCSV.addActionListener(e-> loadCSV());
-         */
+
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");
         try {
@@ -78,7 +77,7 @@ public class TodoMain extends JFrame {
         taskList.addTask(new Task("Jit se proběhnout", new Date(), false));
         taskList.addTask(new Task("Vyvařit roušku", new Date(), false));
 
-        /*
+
         Timer hodiny  = new Timer(1000, e -> setTitle(new Date().toString()));
         hodiny.start();
 
@@ -92,7 +91,6 @@ public class TodoMain extends JFrame {
                 tasksTableModel.fireTableCellUpdated(i,3);
         });
         casDokonceni.start();
-         */
 
         updateVariables();
     }
@@ -143,7 +141,7 @@ public class TodoMain extends JFrame {
         // Změní label s množstvím nesplněných úkolů
         lblUndoneTasks.setText("Nesplněné úkoly: " + taskList.getUndoneTasksCount());
     }
-    /*
+
     // TODO 20.10.2020 DU3
     // Tlačítko na uložení seznamu tasku do JSON souboru
     // Předem definovaný název json v projektu
@@ -241,7 +239,7 @@ public class TodoMain extends JFrame {
             e.printStackTrace();
         }
     }
-    */
+
     public static void main(String[] args) {
         //System.out.println("Hello!!!");
         SwingUtilities.invokeLater(new Runnable() {

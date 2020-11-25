@@ -26,6 +26,7 @@ public class TaskDao {
                         " WHERE id=" + task.getId());
                 p.executeQuery();
             }
+            p.close();
 
         } catch (SQLException throwables) {
             throw new DbException("Error during DB operation", throwables); // obalime puvodni vyjimku nasi runtime vyjimkou
@@ -41,7 +42,7 @@ public class TaskDao {
         try (Connection con = openConnection()) {
             PreparedStatement p = con.prepareStatement("DELETE FROM test where id=" + id);
             p.executeQuery();
-
+            p.close();
         } catch (SQLException throwables) {
             throw new DbException("Error during DB operation", throwables); // obalime puvodni vyjimku nasi runtime vyjimkou
         }
@@ -57,6 +58,7 @@ public class TaskDao {
                 Task t = new Task(rs.getLong("id"), rs.getString("description"), rs.getDate("due_date"), rs.getBoolean("done"));
                 tasks.add(t);
             }
+            s.close();
             return tasks;
         } catch (SQLException throwables) {
             throw new DbException("Error during DB operation", throwables); // obalime puvodni vyjimku nasi runtime vyjimkou

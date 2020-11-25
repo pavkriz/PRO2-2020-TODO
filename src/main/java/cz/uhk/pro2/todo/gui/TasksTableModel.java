@@ -47,8 +47,6 @@ public class TasksTableModel extends AbstractTableModel {
                 float difDate = dueDate.getTime() - nowDate.getTime();
 
                 return (int) (difDate / (1000*60*60*24));
-
-
         }
         return ""; // tohle by se nemelo volat
     }
@@ -79,7 +77,6 @@ public class TasksTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         switch (columnIndex) {
@@ -99,9 +96,7 @@ public class TasksTableModel extends AbstractTableModel {
         }
     }
 
-    /*
     public void setTaskList(TaskList taskList) {
-        this.taskList = taskList;
+        this.tasks = taskList.getTasks();
     }
-     */
 }
