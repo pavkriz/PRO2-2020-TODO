@@ -66,6 +66,8 @@ public class TaskDao {
     }
 
     private Connection openConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/test?serverTimezone=UTC","root", "Vojta131Vojta131");
+        // Můj server - tabulka test
+        //return DriverManager.getConnection("jdbc:mysql://localhost:3306/test?serverTimezone=UTC","root", "Vojta131Vojta131");
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306/test","root", "my-secret-pw");
     }
 }
