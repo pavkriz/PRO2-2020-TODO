@@ -2,7 +2,6 @@ package cz.uhk.pro2.todo.model;
 
 import org.junit.Test;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import static org.junit.Assert.*;

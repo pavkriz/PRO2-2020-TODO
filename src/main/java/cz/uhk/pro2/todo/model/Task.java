@@ -30,6 +30,7 @@ public class Task {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+
     }
 
     public boolean isDone() {

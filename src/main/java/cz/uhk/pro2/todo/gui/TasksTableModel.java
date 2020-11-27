@@ -6,6 +6,7 @@ import cz.uhk.pro2.todo.model.TaskList;
 import javax.swing.table.AbstractTableModel;
 import java.util.Date;
 
+
 public class TasksTableModel extends AbstractTableModel {
     private TaskList taskList;
 
@@ -30,14 +31,14 @@ public class TasksTableModel extends AbstractTableModel {
             case 0: return task.getDescription() + (task.isDone() ? " DONE" : ""); // return nejen vraci hodnotu, ale i konci metodu! proto neni treba vypisovat vsude break
             case 1: return task.getDueDate();
             case 2: return task.isDone();
-            case 3: return new Date();
+            case 3: return countDown(task.getDueDate().getTime());
         }
         return ""; // tohle by se nemelo volat - případně tam přidáme throw new Exception a metodu
     }
 
     @Override
     public String getColumnName(int column) {
-        String[] nazvy = new String[] {"Nazev","Datum","Vyrizeno","Zbyva casu"};
+        String[] nazvy = new String[] {"Název","Datum dokončení","Vyřízeno","Zbývá času"};
         return nazvy[column];
     }
 
@@ -69,14 +70,18 @@ public class TasksTableModel extends AbstractTableModel {
         }
     } // editovatelná tabulka
 
-    public TaskList getTaskList() {
-        return taskList;
-    }
-
     public void setTaskList(TaskList taskList) {
         this.taskList = taskList;
     }
-    //todo Novy sloupec, ktery bude ukazovat, kolik dni zbyva do dokonceni ukolu (dueDate) + tento udaj kazdych 10 sekund aktualizovat (Timer, fireTableDataCHange(),...)
+    public String countDown(Long millisTo0) {
+        Date date = new Date();
+        long difference = millisTo0 - date.getTime();
+        int seconds = (int) (( difference/ 1000) % 60);
+        int minutes = (int) (( difference/ (1000*60)) % 60);
+        int hours = (int) ((difference/(1000*60*60)) % 24);
+        int days = (int) ((difference/(24*1000*60*60)));
+        return days + " dni + " + hours +": " + minutes + ": " + seconds;
+    }
     //simpledateformat
     //SimpleDateFomrat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     //Date d = sdf.parse(zadej datum dle formatu);

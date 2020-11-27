@@ -51,9 +51,20 @@ public class TodoMain extends JFrame {
         btnAdd.addActionListener(e -> addTask());
         btnRmv.addActionListener(e -> removeTask());
 
-        taskList.addTask(new Task("Naučit se Javu", new Date(), false));
-        taskList.addTask(new Task("Jit se proběhnout", new Date(), false));
-        taskList.addTask(new Task("Vyvařit roušku", new Date(), false));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date d1 = new Date();
+        Date d2 = new Date();
+        Date d3 = new Date();
+        try {
+            d1 = dateFormat.parse("24.12.2020 18:00");
+            d2 = dateFormat.parse("31.12.2020 23:59");
+            d3 = dateFormat.parse("5.12.2020 19:30");
+        } catch (ParseException parseException) {
+            parseException.printStackTrace();
+        }
+        taskList.addTask(new Task("Naučit se Javu", d1, false));
+        taskList.addTask(new Task("Jit se proběhnout", d2, false));
+        taskList.addTask(new Task("Vyvařit roušku", d3, false));
 
         refreshLabel(lblUndoneTasks);
         pnlNorth.add(lblUndoneTasks);
@@ -64,6 +75,13 @@ public class TodoMain extends JFrame {
         timer.start();
         Timer aktualizace = new Timer(100,e -> refreshLabel(lblUndoneTasks)); // navic timer, ktery refreshuje label, kvuli editovatelnym bunkam v table modelu
         aktualizace.start();
+        Timer dueTimeUpdater = new Timer(10000,e -> {
+            for (Task task : taskList.getTasks()) {
+                tasksTableModel.countDown(task.getDueDate().getTime());
+            }
+            tasksTableModel.fireTableDataChanged();
+        });
+        dueTimeUpdater.start();
     }
 
     private void loadFromCSV() {
