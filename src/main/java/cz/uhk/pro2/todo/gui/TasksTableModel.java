@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.Date;
 
 public class TasksTableModel extends AbstractTableModel {
-    private final TaskList taskList;
+    private TaskList taskList;
 
     public TasksTableModel(TaskList taskList) {
         this.taskList = taskList;
@@ -69,6 +69,13 @@ public class TasksTableModel extends AbstractTableModel {
         }
     } // editovatelná tabulka
 
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(TaskList taskList) {
+        this.taskList = taskList;
+    }
     //todo Novy sloupec, ktery bude ukazovat, kolik dni zbyva do dokonceni ukolu (dueDate) + tento udaj kazdych 10 sekund aktualizovat (Timer, fireTableDataCHange(),...)
     //simpledateformat
     //SimpleDateFomrat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");

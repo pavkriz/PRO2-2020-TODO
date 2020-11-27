@@ -1,7 +1,5 @@
 package cz.uhk.pro2.todo.model;
 
-import cz.uhk.pro2.todo.TodoMain;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +7,11 @@ import java.util.List;
 public class TaskList {
 
     private List<Task> taskList = new ArrayList<>();
+    public TaskList() {}
+
+    public TaskList(List<Task> taskList) {
+        this.taskList = taskList;
+    }
 
     public void addTask(Task t) {
         taskList.add(t);

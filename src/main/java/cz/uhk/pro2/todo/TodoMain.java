@@ -8,20 +8,25 @@ import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class TodoMain extends JFrame {
     private final JButton btnAdd = new JButton("Přidat úkol");
     private final JButton btnRmv = new JButton("Odebrat úkol");
     private final JButton btnSaveJSON = new JButton("Uložit do JSONu");
+    private final JButton btnLoadJSON = new JButton("Nahrát z JSONu");
+    private final JButton btnSaveCSV = new JButton("Uložit do CSV");
+    private final JButton btnLoadCSV = new JButton("Nahrát z CSV");
     private final JPanel pnlNorth = new JPanel();
     private final JPanel pnlSouth = new JPanel();
     private TaskList taskList = new TaskList();
     private final TasksTableModel tasksTableModel = new TasksTableModel(taskList);
-    private final JTable tbl = new JTable(tasksTableModel);
+    private JTable tbl = new JTable(tasksTableModel);
     public JLabel lblUndoneTasks = new JLabel();
 
     public TodoMain() throws HeadlessException {
@@ -29,13 +34,20 @@ public class TodoMain extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         pnlSouth.add(btnSaveJSON);
+        pnlSouth.add(btnSaveCSV);
+        pnlSouth.add(btnLoadJSON);
+        pnlSouth.add(btnLoadCSV);
         pnlNorth.add(btnAdd);
         pnlNorth.add(btnRmv);
         add(pnlNorth, BorderLayout.NORTH);
         add(pnlSouth,BorderLayout.SOUTH);
         add(new JScrollPane(tbl), BorderLayout.CENTER);
         pack();
+
         btnSaveJSON.addActionListener(e -> saveToJSON(taskList));
+        btnLoadJSON.addActionListener(e -> loadFromJSON());
+        btnSaveCSV.addActionListener(e -> saveToCSV(taskList));
+        btnLoadCSV.addActionListener(e -> loadFromCSV());
         btnAdd.addActionListener(e -> addTask());
         btnRmv.addActionListener(e -> removeTask());
 
@@ -52,6 +64,64 @@ public class TodoMain extends JFrame {
         timer.start();
         Timer aktualizace = new Timer(100,e -> refreshLabel(lblUndoneTasks)); // navic timer, ktery refreshuje label, kvuli editovatelnym bunkam v table modelu
         aktualizace.start();
+    }
+
+    private void loadFromCSV() {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("tasks.csv"),StandardCharsets.UTF_8))) {
+            String s;
+            java.util.List<Task> loadedTasks = new ArrayList<>();
+            int i = 1;
+            while ((s = br.readLine()) != null) {
+                String[] columns = s.split(";");
+                if (columns.length == 3) {
+                    Task task = new Task();
+                    task.setDescription(columns[0]);
+                    SimpleDateFormat formatter = new SimpleDateFormat("EE MMM dd yyyy HH:mm:ss");
+                    Date date = formatter.parse(columns[1]);
+                    task.setDueDate(date);
+                    task.setDone(Boolean.parseBoolean(columns[2]));
+                    loadedTasks.add(task);
+                    i++;
+                } else {
+                    System.out.println("INVALID column count on row " + i);
+                }
+            }
+            TaskList noveUlohy = new TaskList(loadedTasks);
+            tasksTableModel.setTaskList(noveUlohy);
+            tasksTableModel.fireTableDataChanged();
+            this.taskList = noveUlohy;
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveToCSV(TaskList t) {
+        this.taskList = t;
+        try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream("tasks.csv"), StandardCharsets.UTF_8))) {
+            for (Task task : taskList.getTasks()) {
+                pw.print(task.getDescription());
+                pw.print(";");
+                SimpleDateFormat formatter = new SimpleDateFormat("EE MMM dd yyyy HH:mm:ss");
+                String dueDate = formatter.format(task.getDueDate());
+                pw.print(dueDate);
+                pw.print(";");
+                pw.print(task.isDone());
+                pw.println();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadFromJSON() {
+        Gson gson = new Gson();
+        try (Reader fileReader = new FileReader("tasks.json")) {
+            taskList = gson.fromJson(fileReader,TaskList.class);
+            tasksTableModel.setTaskList(taskList); // dodělány v TaskTableModelu getter a setter pro tasklist kvuli změnám v nahrávání
+            tasksTableModel.fireTableDataChanged();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveToJSON(TaskList t) {
