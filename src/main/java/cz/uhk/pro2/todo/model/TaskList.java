@@ -6,18 +6,24 @@ import java.util.List;
 
 public class TaskList {
     private List<Task> tasks;
-    public TaskList(){
-         tasks = new ArrayList<>();
+
+    public TaskList() {
+        tasks = new ArrayList<>();
     }
-    public List<Task> getTasks(){
+
+    public TaskList(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public List<Task> getTasks() {
         return Collections.unmodifiableList(tasks);
     }
 
-    public void addTask(Task t){
+    public void addTask(Task t) {
         tasks.add(t);
     }
 
-    public void removeTask(Task t){
+    public void removeTask(Task t) {
         tasks.remove(t);
     }
 
@@ -31,7 +37,7 @@ public class TaskList {
         return utasks;
     }
 
-    public void deleteTasks() {
+    public void clear() {
         tasks.clear();
     }
 }

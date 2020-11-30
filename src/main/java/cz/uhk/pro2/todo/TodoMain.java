@@ -2,6 +2,7 @@ package cz.uhk.pro2.todo;
 
 import com.google.gson.Gson;
 import cz.uhk.pro2.todo.GUI.TasksTableModel;
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
@@ -14,8 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TodoMain extends JFrame {
-    private TaskList taskList = new TaskList();
-    private TasksTableModel tasksTableModel = new TasksTableModel(taskList);
+    private TaskDao taskDao = new TaskDao();
+    private TaskList taskList = new TaskList(taskDao.findAll());
+    private TasksTableModel tasksTableModel = new TasksTableModel(taskDao);
     private JTable tbl = new JTable(tasksTableModel);
     private Label lblUndone = new Label("Počet nedokončených tasků: 0");
 
@@ -42,8 +44,8 @@ public class TodoMain extends JFrame {
         btnDel.addActionListener(e -> delTask());
         saveBtn.addActionListener(e -> saveFile()); // save btn
         loadBtn.addActionListener(e -> loadCSV());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        try {
+        //SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        /*try {
             taskList.addTask(new Task("default", sdf.parse("12.12.2020 12:00"), true));
             taskList.addTask(new Task("default2", sdf.parse("12.12.2021 12:00"), true));
             taskList.addTask(new Task("default3", sdf.parse("12.12.2020 18:00"), true));
@@ -51,7 +53,8 @@ public class TodoMain extends JFrame {
             taskList.addTask(new Task("default5", sdf.parse("27.11.2020 13:50"), true));
         } catch (Exception c) {
             c.printStackTrace();
-        }
+        }*/
+        getUpdatedInfo();
     }
 
     public static File getSelectedFileWithExtension(JFileChooser c) {
@@ -116,30 +119,35 @@ public class TodoMain extends JFrame {
         String sdate = JOptionPane.showInputDialog("Zadej datum ve formátu dd.mm.yyyy hh:mm");
 
         Date date;
-        try{
+        try {
             date = new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(sdate);
-        }catch(Exception e){
+        } catch (Exception e) {
             date = new Date();
         }
 
         boolean done;
-        int dialogResult = JOptionPane.showConfirmDialog (null, "Je task hotový?");
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Je task hotový?");
         done = dialogResult == JOptionPane.YES_OPTION;
 
-
-        taskList.addTask(new Task(desc,date,done));
-        getUpdatedInfo();
+        Task t = new Task(desc, date, done);
+        taskDao.save(t);
+        taskList.addTask(t);
+        System.out.println("Task ID: " + t.getId());
+        tasksTableModel.reloadData();
         tbl.addNotify();
+        getUpdatedInfo();
     }
 
     private void delTask(){
         int selected = tbl.getSelectedRow();
         if(selected != -1) {
-            tasksTableModel.removeRow(selected);
-            taskList.removeTask(taskList.getTasks().get(selected));
+            Task t;
+            t = taskList.getTasks().get(selected);
+            taskDao.delete(t);
+            taskList.removeTask(t);
             tbl.clearSelection();
+            tasksTableModel.reloadData();
             tbl.addNotify();
-
             getUpdatedInfo();
             JOptionPane.showMessageDialog(null, "Řádek vymazán!");
         }
@@ -153,7 +161,6 @@ public class TodoMain extends JFrame {
         SwingUtilities.invokeLater(() -> {
             TodoMain windows = new TodoMain();
             windows.setVisible(true);
-
         });
     }
 
@@ -175,7 +182,7 @@ public class TodoMain extends JFrame {
 
                     String r;
                     int row = 0;
-                    taskList.deleteTasks();
+                    taskList.clear();
                     while ((r = bfr.readLine()) != null) {
                         String[] columns = r.split(";");
                         if (columns.length == 3) {
@@ -186,6 +193,7 @@ public class TodoMain extends JFrame {
                         }
                         row++;
                     }
+                    tasksTableModel.loadTasks(taskList);
                 } catch (IOException | ParseException e) {
                     e.printStackTrace();
                 }
@@ -194,19 +202,22 @@ public class TodoMain extends JFrame {
             if (fileToLoad.getAbsolutePath().endsWith(".json")) {
                 try {
                     Gson gson = new Gson();
-                    taskList.deleteTasks();
+                    taskList.clear();
                     BufferedReader bfr = new BufferedReader(new FileReader(fileToLoad));
                     TaskList newTl = gson.fromJson(bfr, TaskList.class);
                     for (Task t : newTl.getTasks()) {
                         taskList.addTask(t);
                     }
                     bfr.close();
+                    tasksTableModel.loadTasks(taskList);
                     JOptionPane.showMessageDialog(null, "Soubor načten: " + fileToLoad.getAbsolutePath());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
+
+        tasksTableModel.reloadData();
         getUpdatedInfo();
         tbl.addNotify();
     }
