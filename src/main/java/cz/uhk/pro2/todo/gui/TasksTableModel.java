@@ -1,21 +1,24 @@
 package cz.uhk.pro2.todo.gui;
 
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.model.Task;
-import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.List;
 
 public class TasksTableModel extends AbstractTableModel {
-    private TaskList taskList;
     private String[] columnNames = {"Úkol", "Splnit do", "Splněno", "Zbývá"};
+    private TaskDao taskDao;
+    private List<Task> tasks; // docasne uloziste tasku, abychom se porad neptali DB
 
-    public TasksTableModel(TaskList taskList) {
-        this.taskList = taskList;
+    public TasksTableModel(TaskDao taskDao) {
+        this.taskDao = taskDao;
+        reloadData();
     }
 
     @Override
     public int getRowCount() {
-        return taskList.getTasks().size();
+        return tasks.size();
     }
 
     // TODO DU 27.10.2020 Zobrazovat dalsi sloupec s poctem dni, klolik zbyva do dokonceni ukolu (dueDate)
@@ -28,7 +31,7 @@ public class TasksTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Task task = taskList.getTasks().get(rowIndex);
+        Task task = tasks.get(rowIndex);
         switch (columnIndex) {
             case 0: return task.getDescription(); // + (task.isDone() ? " DONE" : ""); // alternativne zobrazujeme jeste priznak DONE
             case 1: return task.getDueDate();
@@ -62,8 +65,10 @@ public class TasksTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if (columnIndex == 2) { // done
-            Task task = taskList.getTasks().get(rowIndex);
+            Task task = tasks.get(rowIndex);
             task.setDone((Boolean) aValue);
+            // ulozit do DB zmeneny zaznam
+            taskDao.save(task);
             fireTableCellUpdated(rowIndex, columnIndex);
             //fireTableCellUpdated(rowIndex, 0); // informujeme tabulku, ze se zmenil i sloupec 0, pokud bychom v nem zobrazovali priznak DONE
         }
@@ -71,8 +76,37 @@ public class TasksTableModel extends AbstractTableModel {
     }
 
     public void updateDueDateColumn() {
-        for (int i = 0; i < this.taskList.getTasks().size(); i++) {
+        for (int i = 0; i < this.tasks.size(); i++) {
             this.fireTableCellUpdated(i, 3);
         }
+    }
+
+    public void reloadData() {
+        tasks = taskDao.findAll(); // vytahneme data z DB
+        fireTableDataChanged();
+    }
+
+    public List<Task> getTasks() {
+        return this.tasks;
+    }
+
+    public Task getTask(int row) {
+        return tasks.get(row);
+    }
+
+    public int getUndoneTasksCount() {
+        int count = 0;
+
+        for (Task t : tasks) {
+            if (!t.isDone()) count++;
+        }
+        return count;
+    }
+
+    public void loadTasks(List<Task> tasks) {
+        this.tasks.forEach(taskDao::delete);
+        this.tasks = tasks;
+        tasks.forEach(taskDao::save);
+        reloadData();
     }
 }

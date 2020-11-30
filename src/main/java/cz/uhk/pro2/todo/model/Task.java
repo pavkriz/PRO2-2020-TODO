@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Task {
-
+    private int id;
     private String description;
     private Date dueDate;
     private boolean done;
@@ -16,6 +16,19 @@ public class Task {
         this.description = description;
         this.dueDate = dueDate;
         this.done = done;
+    }
+
+    public Task(int id, String description, Date dueDate, boolean done) {
+        this(description, dueDate, done);
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -45,7 +58,8 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "description='" + description + '\'' +
+                "id=" + id +
+                ", description='" + description + '\'' +
                 ", dueDate=" + dueDate +
                 ", done=" + done +
                 '}';

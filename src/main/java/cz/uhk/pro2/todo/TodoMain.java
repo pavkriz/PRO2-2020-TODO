@@ -1,35 +1,38 @@
 package cz.uhk.pro2.todo;
 
 import com.google.gson.Gson;
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
-import cz.uhk.pro2.todo.model.TaskList;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class TodoMain extends JFrame {
     private JButton btnAdd = new JButton("Přidat úkol");
     private JButton btnRemove = new JButton("Smazat úkol");
-    private JButton btnExport = new JButton("Exportovat do JSON");
+    private JButton btnImportJson = new JButton("Import JSON");
+    private JButton btnExportJson = new JButton("Export JSON");
+    private JButton btnImportCsv = new JButton("Import CSV");
+    private JButton btnExportCsv = new JButton("Export CSV");
     private JPanel pnlNorth = new JPanel();
     private JPanel pnlSouth = new JPanel();
-    private TaskList taskList = new TaskList();
-    private TasksTableModel tasksTableModel = new TasksTableModel(taskList);
+    private TaskDao taskDao = new TaskDao();
+    private TasksTableModel tasksTableModel = new TasksTableModel(taskDao);
     private JTable tbl = new JTable(tasksTableModel);
     private JLabel lblUndoneTasks = new JLabel("Počet nesplněných úkolů:");
-    private JFileChooser fileChooser = new JFileChooser();
+    private JFileChooser jsonFileChooser = new JFileChooser();
+    private JFileChooser csvFileChooser = new JFileChooser();
     private Gson gson = new Gson();
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
@@ -38,7 +41,10 @@ public class TodoMain extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pnlNorth.add(btnAdd);
         pnlNorth.add(btnRemove);
-        pnlNorth.add(btnExport);
+        pnlNorth.add(btnImportJson);
+        pnlNorth.add(btnExportJson);
+        pnlNorth.add(btnImportCsv);
+        pnlNorth.add(btnExportCsv);
         add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(tbl), BorderLayout.CENTER);
         pnlSouth.add(lblUndoneTasks);
@@ -47,10 +53,10 @@ public class TodoMain extends JFrame {
         setLocationRelativeTo(null);
         btnAdd.addActionListener(e -> addTask());
         btnRemove.addActionListener(e -> removeTask());
-        btnExport.addActionListener(e -> exportToJson());
-        taskList.addTask(new Task("Naučit se Javu", new Date(), true));
-        taskList.addTask(new Task("Jit se proběhnout", new Date(), true));
-        taskList.addTask(new Task("Vyvařit roušku", new Date(), true));
+        btnImportJson.addActionListener(e -> importFromJson());
+        btnExportJson.addActionListener(e -> exportToJson());
+        btnImportCsv.addActionListener(e -> importFromCsv());
+        btnExportCsv.addActionListener(e -> exportToCsv());
         Timer timer  = new Timer(1000, e -> {
             setTitle(new Date().toString());
         });
@@ -61,13 +67,20 @@ public class TodoMain extends JFrame {
             }
         });
         updateUndoneTasksLabel();
-        fileChooser.setFileFilter(new FileNameExtensionFilter("json file", "json"));
-        fileChooser.setSelectedFile(new File("tasks.json"));
+        jsonFileChooser.setFileFilter(new FileNameExtensionFilter("json file", "json"));
+        jsonFileChooser.setSelectedFile(new File("tasks.json"));
+        csvFileChooser.setFileFilter(new FileNameExtensionFilter("Comma separated values", "csv"));
+        csvFileChooser.setSelectedFile(new File("tasks.csv"));
 
         new Timer(1000, e -> tasksTableModel.updateDueDateColumn()).start();
     }
 
     private void addTask() {
+        // TODO 13.10.2020 DU1
+        // zeptame se uzivatele
+        // vytvorime task a pridame do seznamu
+        // notifikujeme tabulku, ze doslo ze zmene dat
+        //taskDao.save(task);
         JTextField txtTask = new JTextField();
         JTextField txtDueDate = new JTextField(sdf.format(new Date()));
         JPanel pnlAddTask = new JPanel(new GridLayout(2,2));
@@ -79,42 +92,100 @@ public class TodoMain extends JFrame {
         int clickedButton = JOptionPane.showConfirmDialog(null, pnlAddTask, "Zadejte úkol:", JOptionPane.OK_CANCEL_OPTION);
         if(clickedButton == JOptionPane.OK_OPTION) {
             try {
-                taskList.addTask(new Task(txtTask.getText(), sdf.parse(txtDueDate.getText()), false));
-                tasksTableModel.fireTableDataChanged();
+                taskDao.save(new Task(txtTask.getText(), sdf.parse(txtDueDate.getText()), false));
+                tasksTableModel.reloadData();
                 updateUndoneTasksLabel();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
+        tasksTableModel.reloadData();
     }
 
     private void removeTask() {
         // Tlacitko pro smazani vybraneho radku
         int selectedRowCount = tbl.getSelectedRowCount();
         if (selectedRowCount == 1) {
-            taskList.removeTask(tbl.getSelectedRow());
+            Task t = tasksTableModel.getTask(tbl.getSelectedRow());
+            taskDao.delete(t.getId());
         } else {
             JOptionPane.showMessageDialog(this,"Nebyl vybrán žádný úkol.");
             return;
         }
-        tasksTableModel.fireTableDataChanged();
-        updateUndoneTasksLabel();
+        tasksTableModel.reloadData();
     }
 
     private void updateUndoneTasksLabel() {
         // Label, ktery bude zobrazovat pocet nesplnenych tasku
-        lblUndoneTasks.setText("Počet nesplněných úkolů: " + taskList.getUndoneTasksCount());
+        lblUndoneTasks.setText("Počet nesplněných úkolů: " + tasksTableModel.getUndoneTasksCount());
+    }
+
+    private void importFromJson() {
+        try {
+            int result = jsonFileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File file = jsonFileChooser.getSelectedFile();
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                Task[] tasks = gson.fromJson(bufferedReader, Task[].class);
+                tasksTableModel.loadTasks(Arrays.asList(tasks));
+                updateUndoneTasksLabel();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void exportToJson() {
         // Tlacitko na ulozeni seznamu tasku do JSON souboru
         // [{ description:"Naucit se Javu",.... },{  },{  }]
-        int returnValue = fileChooser.showSaveDialog(this);
+        int returnValue = jsonFileChooser.showSaveDialog(this);
         if(returnValue == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
+            File file = jsonFileChooser.getSelectedFile();
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                writer.append(gson.toJson(taskList.getTasks()));
+                writer.append(gson.toJson(tasksTableModel.getTasks()));
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void importFromCsv() {
+        int returnValue = csvFileChooser.showOpenDialog(this);
+        if(returnValue == JFileChooser.APPROVE_OPTION) {
+            try {
+                File file = csvFileChooser.getSelectedFile();
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                List<Task> tasks = new ArrayList();
+                String line;
+                reader.readLine();
+                while ((line = reader.readLine()) != null) {
+                    String[] split = line.split(",");
+                    if (split.length != 3) throw new RuntimeException("Invalid CSV format");
+                    tasks.add(new Task(split[0], sdf.parse(split[1]), Boolean.parseBoolean(split[2])));
+                }
+                tasksTableModel.loadTasks(tasks);
+                tasksTableModel.reloadData();
+                updateUndoneTasksLabel();
+            } catch (IOException | ParseException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void exportToCsv() {
+        int returnValue = csvFileChooser.showSaveDialog(this);
+        if(returnValue == JFileChooser.APPROVE_OPTION) {
+            try {
+                File file = csvFileChooser.getSelectedFile();
+                StringBuilder csvBuilder = new StringBuilder("description,dueDate,done");
+                tasksTableModel.getTasks().forEach(task -> {
+                    csvBuilder.append(System.lineSeparator());
+                    csvBuilder.append((String.format("%s,%s,%s", task.getDescription(), sdf.format(task.getDueDate()), task.isDone())));
+                });
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                writer.append(csvBuilder.toString());
                 writer.close();
             } catch (IOException ex) {
                 ex.printStackTrace();
