@@ -13,7 +13,7 @@ public class TaskDao {
             boolean isInsert = false;
             if (task.getId() == 0) {
                 isInsert = true;
-                s = con.prepareStatement("insert into task values", Statement.RETURN_GENERATED_KEYS);
+                s = con.prepareStatement("insert into task (description, dueDate, done) values (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             } else {
                 s = con.prepareStatement("update task set description=?, dueDate=?, done=? where id=?");
                 s.setLong(4, task.getId());
@@ -28,7 +28,7 @@ public class TaskDao {
                 task.setId(rs.getLong(1));
             }
         } catch (Throwable e) {
-            throw new DbException("Error during operation", e);
+            throw new DbException("Error during db operation", e);
         }
     }
 
@@ -47,7 +47,7 @@ public class TaskDao {
             s.setLong(1, id);
             ResultSet rs = s.executeQuery();
         } catch (Throwable e) {
-            throw new DbException("Error  during operation", e);
+            throw new DbException("Error during db operation", e);
         }
     }
 
@@ -62,7 +62,7 @@ public class TaskDao {
             }
             return taskList;
         } catch (Throwable e) {
-            throw new DbException("Error during operation", e);
+            throw new DbException("Error during db operation", e);
         }
     }
 

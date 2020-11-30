@@ -24,10 +24,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TodoMain extends JFrame {
-    private final JButton btnAddTask = new JButton("Přidat úkol");
-    private final JButton btnRemoveTask = new JButton("Odebrat úkol");
-    private final JButton btnSaveToFile = new JButton("Ulož data do souboru");
-    private final JLabel lblUnfinishedTasks = new JLabel("Počet nesplněných úkolů: 0");
+    private final JButton btnAddTask = new JButton("Add task");
+    private final JButton btnRemoveTask = new JButton("Remove task");
+    private final JButton btnSaveToFile = new JButton("Save data to file");
+    private final JLabel lblUnfinishedTasks = new JLabel("Undone tasks: 0");
     private final JMenuBar menuBar = new JMenuBar();
     private final JPanel pnlNorth = new JPanel();
     private TaskDao taskDao = new TaskDao();
@@ -37,14 +37,13 @@ public class TodoMain extends JFrame {
     private Timer updateTimer;
 
     public TodoMain() throws HeadlessException {
-        setTitle("TODO aplikace");
+        setTitle("TODO application");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pnlNorth.add(btnAddTask);
         pnlNorth.add(btnRemoveTask);
         pnlNorth.add(lblUnfinishedTasks);
         add(pnlNorth, BorderLayout.NORTH);
         add(new JScrollPane(tbl), BorderLayout.CENTER);
-        //add(btnSaveToFile, BorderLayout.SOUTH);
         pack();
         btnAddTask.addActionListener(e -> {
             addTask();
@@ -58,10 +57,10 @@ public class TodoMain extends JFrame {
         initializeTimers();
         setJMenuBar(menuBar);
 
-        JMenu menu = new JMenu("Soubor");
+        JMenu menu = new JMenu("File");
         menuBar.add(menu);
-        JMenuItem m1 = new JMenuItem("Otevřít");
-        JMenuItem m2 = new JMenuItem("Uložit");
+        JMenuItem m1 = new JMenuItem("Open");
+        JMenuItem m2 = new JMenuItem("Save");
         m2.addActionListener(c -> saveToFile());
         m1.addActionListener(c -> readFromFile());
         menu.add(m1);
@@ -74,7 +73,7 @@ public class TodoMain extends JFrame {
     }
 
     private void updateUnfinishedTasks() {
-        lblUnfinishedTasks.setText("Počet nesplněných úkolů: " + taskList.getUndoneTasksCount());
+        lblUnfinishedTasks.setText("Undone tasks: " + taskList.getUndoneTasksCount());
     }
 
     private void removeHighlightedTask() {
@@ -95,7 +94,7 @@ public class TodoMain extends JFrame {
                 switch (FilenameUtils.getExtension(fileToSave.getName()).toLowerCase()) {
                     case "":
                     default:
-                        JOptionPane.showMessageDialog(this, "Musíš zadat extension!");
+                        JOptionPane.showMessageDialog(this, "Extension!");
                         return;
                     case "json":
                         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
@@ -111,7 +110,7 @@ public class TodoMain extends JFrame {
                 }
                 fw.close();
             } catch (Throwable throwable) {
-                JOptionPane.showMessageDialog(this, "Nepodařilo se uložit soubor.");
+                JOptionPane.showMessageDialog(this, "Saving failed");
             }
         }
     }
@@ -121,8 +120,7 @@ public class TodoMain extends JFrame {
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("JSON soubory", "json"));
         fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CSV soubory", "csv"));
-        fileChooser.setDialogTitle("Vyberte, kam uložit soubor s daty");
-
+        fileChooser.setDialogTitle("Data folder path");
         return fileChooser;
     }
 
@@ -176,11 +174,11 @@ public class TodoMain extends JFrame {
     }
 
     private void addTask() {
-        String description = JOptionPane.showInputDialog(this, "Zadej název úkolu");
+        String description = JOptionPane.showInputDialog(this, "Task name");
         if (description == null) {
             return;
         }
-        String dateString = JOptionPane.showInputDialog(this, "Zadej do kdy se má splnit (formát DD.MM.RRRR HH:MM)");
+        String dateString = JOptionPane.showInputDialog(this, "Deadline");
         if (dateString == null) {
             return;
         }
@@ -189,20 +187,19 @@ public class TodoMain extends JFrame {
         try {
             date = dateParser.parse(dateString);
         } catch (Throwable throwable) {
-            JOptionPane.showMessageDialog(this, "Zadal si špatně datum, takže máš smůlu");
+            JOptionPane.showMessageDialog(this, "Failed date");
             return;
         }
 
-        Object isFinishedObject = JOptionPane.showInputDialog(this, "Byl už úkol splněn?",
-                "Splnění úkolu", JOptionPane.QUESTION_MESSAGE,
-                null, new Object[]{"ANO", "NE"}, "NE");
+        Object isFinishedObject = JOptionPane.showInputDialog(this, "Is task done?",
+                "Done", JOptionPane.QUESTION_MESSAGE,
+                null, new Object[]{"Yes", "No"}, "No");
         if (isFinishedObject == null) {
             return;
         }
-        boolean isFinished = isFinishedObject.equals("ANO");
+        boolean isFinished = isFinishedObject.equals("Yes");
 
         Task task = new Task(description, date, isFinished);
-        //taskList.addTask(task);
         tasksTableModel.addTask(task);
         tbl.updateUI();
     }
@@ -212,6 +209,5 @@ public class TodoMain extends JFrame {
             TodoMain windows = new TodoMain();
             windows.setVisible(true);
         });
-
     }
 }

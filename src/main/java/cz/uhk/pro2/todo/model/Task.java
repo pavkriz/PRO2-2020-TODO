@@ -22,15 +22,16 @@ public class Task {
         setId(id);
     }
 
-    public Task() {
-    }
+    public Task() {}
 
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
+
     public Date getDueDate() {
         return dueDate;
     }
@@ -43,32 +44,36 @@ public class Task {
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
+
     public boolean isDone() {
         return done;
     }
+
     public void setDone(boolean done) {
         this.done = done;
     }
+
     public long getId() {
         return id;
     }
+
     public void setId(long id) {
         this.id = id;
     }
 
     public String getRemainingTime() {
         if (isDone()) {
-            return "Úkol vyřešen";
+            return "Task done.";
         }
         long seconds = (getDueDate().getTime() - (new Date()).getTime()) / 1000;
         if (seconds < 0) {
-            return "Úkol nesplněn v čas";
+            return "Task undone in time.";
         }
         int day = (int) TimeUnit.SECONDS.toDays(seconds);
         long hours = TimeUnit.SECONDS.toHours(seconds) - (day * 24);
         long minute = TimeUnit.SECONDS.toMinutes(seconds) - (TimeUnit.SECONDS.toHours(seconds) * 60);
         long second = TimeUnit.SECONDS.toSeconds(seconds) - (TimeUnit.SECONDS.toMinutes(seconds) * 60);
-        return String.format("%d dní %d hodin %d minut %d sekund", day, hours, minute, second);
+        return String.format("%d dnů %d hodin %d minut %d sekund", day, hours, minute, second);
     }
 
     @Override

@@ -8,7 +8,6 @@ import javax.swing.table.AbstractTableModel;
 import java.util.Date;
 
 public class TasksTableModel extends AbstractTableModel {
-
     private TaskList taskList;
     private final TaskDao taskDao;
 
@@ -48,13 +47,13 @@ public class TasksTableModel extends AbstractTableModel {
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return "Co mám dělat?";
+                return "Tasks?";
             case 1:
-                return "Datum splatnosti:";
+                return "Deadline";
             case 2:
-                return "Vyřešený";
+                return "Done";
             case 3:
-                return "Zbývá času:";
+                return "Remaining time";
             default:
                 return "NULL";
         }
@@ -77,7 +76,7 @@ public class TasksTableModel extends AbstractTableModel {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        if (columnIndex == 2) { // isDone
+        if (columnIndex == 2) {
             Task task = taskList.getTasks().get(rowIndex);
             task.setDone((Boolean) aValue);
             taskDao.save(task);

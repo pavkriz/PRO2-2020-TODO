@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 public class TodoMainTest {
     @Test
     public void test1() {
-        String result = "abc";
-        assertEquals(result, "abc");
+        String result = "nazdar";
+        assertEquals(result, "nazdar");
     }
 }

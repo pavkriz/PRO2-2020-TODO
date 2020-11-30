@@ -8,10 +8,7 @@ import java.util.stream.Collectors;
 
 public class TaskList {
     private final List<Task> tasks = new ArrayList<>();
-
-    public TaskList() {
-    }
-
+    public TaskList() {}
     public void addTask(Task task) {
         tasks.add(task);
     }
@@ -42,14 +39,14 @@ public class TaskList {
     }
 
     public Task getByData(String description, Date dueDate, boolean isDone) {
-        List<Task> taskList = tasks.stream().filter(c -> c.getDescription().equals(description)
-                && c.getDueDate().equals(dueDate) && c.isDone() == isDone).collect(Collectors.toList());
+        List<Task> taskList = tasks.stream().filter(c -> c.getDescription().equals(description) &&
+                                                            c.getDueDate().equals(dueDate) &&
+                                                            c.isDone() == isDone).collect(Collectors.toList());
         if(taskList.size() > 0) {
             return taskList.get(0);
         }
         return null;
     }
-
     public Task getByIndex(int index) {
         return tasks.get(index);
     }
