@@ -1,5 +1,6 @@
 package cz.uhk.pro2.todo;
 
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
@@ -30,9 +31,11 @@ import java.util.List;
 public class TodoMain extends JFrame {
     private JButton btnAdd = new JButton("Přidat úkol");
     private JPanel pnlNorth = new JPanel();
-    private JPanel pnlSouth = new JPanel();
+    private JPanel pnlSouth = new JPanel();/*
     private static TaskList taskList = new TaskList();
-    private TasksTableModel tasksTableModel = new TasksTableModel(taskList);
+    private TasksTableModel tasksTableModel = new TasksTableModel(taskList);*/
+    private TaskDao taskDao = new TaskDao();
+    private TasksTableModel tasksTableModel = new TasksTableModel(taskDao);
     private JTable tbl = new JTable(tasksTableModel);
     private JLabel lblUndoneTasks = new JLabel("Undone tasks: ");
     private JButton btnDel = new JButton("Odstranit úkol");
@@ -56,6 +59,23 @@ public class TodoMain extends JFrame {
         add(pnlSouth, BorderLayout.SOUTH);
         add(new JScrollPane(tbl), BorderLayout.CENTER);
         pack();
+        btnAdd.addActionListener(e -> {
+            try {
+                addTask();
+            } catch (ParseException e2) {
+                // TODO Auto-generated catch block
+                e2.printStackTrace();
+            }
+        });
+        btnDel.addActionListener(e -> deleteTask());
+        btnSaveJSON.addActionListener(e -> {
+            try {
+                saveJson();
+            } catch (IOException e1) {
+                System.out.println(e1);
+            }
+        });
+        /*
         btnLoadCsv.addActionListener(e-> {
             try {
                 loadCsv();
@@ -75,22 +95,8 @@ public class TodoMain extends JFrame {
                 e3.printStackTrace();
             }
         });
-        btnAdd.addActionListener(e -> {
-            try {
-                addTask();
-            } catch (ParseException e2) {
-                // TODO Auto-generated catch block
-                e2.printStackTrace();
-            }
-        });
-        btnDel.addActionListener(e -> deleteTask());
-        btnSaveJSON.addActionListener(e -> {
-            try {
-                saveJson();
-            } catch (IOException e1) {
-                System.out.println(e1);
-            }
-        });
+       
+        
         btnLoadJSON.addActionListener(e -> loadJson());
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         Date d = sdf.parse("25.11.2020 23:59");
@@ -103,7 +109,7 @@ public class TodoMain extends JFrame {
             tbl.repaint();
 
         });
-        timer.start();
+        timer.start();*/
     }
 
     private void saveCsv() throws IOException {
@@ -206,12 +212,17 @@ public class TodoMain extends JFrame {
     }
    
     private void deleteTask() {
-        
+        /*
         if(tbl.getSelectedRow()!=-1 &&tbl.getSelectedRow()!=taskList.getSize()){
         taskList.removeTask(taskList.getTasks().get(tbl.getSelectedRow()));
         lblUndoneTasks.setText("Undone tasks: " + taskList.getUndoneTasksCount());
         tbl.revalidate();
-        tbl.repaint();}
+        tbl.repaint();}*/
+        if(tbl.getSelectedRow()!=-1 &&tbl.getSelectedRow()!=tasksTableModel.getRowCount()){
+            
+            taskDao.delete(tasksTableModel.getTaskAt(tbl.getSelectedRow()).getId());
+            tasksTableModel.reloadData();
+        }
     }
 
     private void addTask() throws ParseException {
@@ -231,9 +242,10 @@ public class TodoMain extends JFrame {
             e.printStackTrace();
         } 
         if (des != "" || des != null) {
-            taskList.addTask(new Task(des, d, false));
+           Task neww =  new Task(0,des, d, false);
+           taskDao.save(neww);
         }
-        lblUndoneTasks.setText("Undone tasks: " + taskList.getUndoneTasksCount());
+        
         tbl.revalidate();
         tbl.repaint();
 

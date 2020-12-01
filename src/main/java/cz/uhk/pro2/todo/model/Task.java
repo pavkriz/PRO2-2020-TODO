@@ -3,13 +3,25 @@ package cz.uhk.pro2.todo.model;
 import java.util.Date;
 
 public class Task {
+    private long id;    
     private String description;
     private Date dueDate;
     private boolean done;
 
     public Task() {
     }
+    public Task(long id, String description, Date dueDate, boolean done) {
+        this(description, dueDate, done);
+        this.id = id;
+    }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
     public Task(String description, Date dueDate, boolean done) {
         this.description = description;
         this.dueDate = dueDate;
