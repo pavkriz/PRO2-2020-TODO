@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Task {
 
+    private long id;
     private String description;
     private Date date;
     private boolean done;
@@ -11,10 +12,25 @@ public class Task {
     public Task() {
     }
 
+    public Task(long id, String description, Date date, boolean done) {
+        this.id = id;
+        this.description = description;
+        this.date = date;
+        this.done = done;
+    }
+
     public Task(String description, Date date, boolean done) {
         this.description = description;
         this.date = date;
         this.done = done;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -42,8 +58,9 @@ public class Task {
     }
 
     public String toString(){
-        return "Task { " +
-                "description = '" + description + '\''+
+        return "Task { \n" +
+                "id = '" + id + '\'' +
+                ", description = '" + description + '\''+
                 ", dueDate = " + date +
                 ", done = " + done +
                 ", dueDate" +

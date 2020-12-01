@@ -1,5 +1,6 @@
 package cz.uhk.pro2.todo.gui;
 
+import cz.uhk.pro2.todo.database.TaskDao;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
@@ -11,10 +12,19 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskTableModel extends AbstractTableModel {
 
-    private final TaskList taskList;
+    private TaskList taskList = new TaskList();
+    private TaskDao taskDao;
 
     public TaskTableModel(TaskList taskList) {
         this.taskList = taskList;
+    }
+
+    public TaskTableModel() {
+        taskList = new TaskList();
+    }
+
+    public TaskTableModel(TaskDao taskDao) {
+        this.taskDao = taskDao;
     }
 
     @Override
@@ -24,7 +34,7 @@ public class TaskTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -33,14 +43,14 @@ public class TaskTableModel extends AbstractTableModel {
 
         //switch-case
         switch (columnIndex){
-            case 0: return task.getDescription();
-            case 1:
+            case 0: return task.getId();
+            case 1: return task.getDescription();
+            case 2:
                 DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                 String strDate = dateFormat.format(task.getDate());
                 return strDate;
-            case 2: return task.isDone();
-            case 3:
-                return getDueTime(task);
+            case 3: return task.isDone();
+            case 4: return getDueTime(task);
             default: return "";
         }
     }
@@ -75,7 +85,7 @@ public class TaskTableModel extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
-            case 2: return Boolean.class;
+            case 3: return Boolean.class;
             default: return Object.class;
         }
     }
@@ -83,14 +93,14 @@ public class TaskTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         switch (columnIndex) {
-            case 2: return true;
+            case 3: return true;
             default: return false;
         }
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        if (columnIndex == 2) { // done
+        if (columnIndex == 3) { // done
             Task task = taskList.getTasks().get(rowIndex);
             task.setDone((Boolean) aValue);
         }
