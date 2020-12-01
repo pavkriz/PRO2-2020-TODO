@@ -5,7 +5,16 @@ import java.util.Collections;
 import java.util.List;
 public class TaskList {
 
-    private final List<Task> tasks = new ArrayList<>();
+    private final List<Task> tasks;
+
+    public TaskList(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public TaskList() {
+        tasks = new ArrayList<>();
+    }
+
 
     public void addTask(Task task){
         tasks.add(task);
@@ -33,4 +42,5 @@ public class TaskList {
     public void deleteTasks() {
         tasks.clear();
     }
+
 }
