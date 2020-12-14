@@ -2,6 +2,7 @@ package cz.uhk.pro2.todo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.gui.TasksTableModel;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
@@ -25,7 +26,8 @@ public class TodoMain extends JFrame {
     private final JPanel pnlNorth = new JPanel();
     private final JPanel pnlSouth = new JPanel();
     private TaskList taskList = new TaskList();
-    private final TasksTableModel tasksTableModel = new TasksTableModel(taskList);
+    private TaskDao taskDao = new TaskDao();
+    private final TasksTableModel tasksTableModel = new TasksTableModel(taskDao);
     private JTable tbl = new JTable(tasksTableModel);
     public JLabel lblUndoneTasks = new JLabel();
 

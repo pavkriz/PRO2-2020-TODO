@@ -1,5 +1,6 @@
 package cz.uhk.pro2.todo.gui;
 
+import cz.uhk.pro2.todo.dao.TaskDao;
 import cz.uhk.pro2.todo.model.Task;
 import cz.uhk.pro2.todo.model.TaskList;
 
@@ -9,10 +10,12 @@ import java.util.Date;
 
 public class TasksTableModel extends AbstractTableModel {
     private TaskList taskList;
+    private TaskDao taskdao;
 
-    public TasksTableModel(TaskList taskList) {
-        this.taskList = taskList;
-    } // reference na tasklist je nutná kvuli metodam
+    public TasksTableModel(TaskDao taskdao) {
+        this.taskdao = taskdao;
+        reloadData();
+    } // reference na tasklist/taskdao je nutná kvuli metodam
 
     @Override
     public int getRowCount() {
@@ -66,6 +69,7 @@ public class TasksTableModel extends AbstractTableModel {
             task.setDescription(task.getDescription() + " DONE");
             fireTableCellUpdated(rowIndex,0); davam vedet tabulce
              */
+            taskdao.save(task);
             fireTableCellUpdated(rowIndex,0);
         }
     } // editovatelná tabulka
@@ -88,4 +92,8 @@ public class TasksTableModel extends AbstractTableModel {
     //d.getTime() .. kolik ms od 1.1.1970
     //long diffMillis = d.getTime() - now.getTime() - za jak dlouho v milisekundách nastane datum d
 
+    public void reloadData() {
+        taskList = taskdao.findAll();
+        fireTableDataChanged();
+    }
 }

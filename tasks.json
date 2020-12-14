@@ -1,0 +1,34 @@
+{
+  "taskList": [
+    {
+      "description": "Naučit se Javu",
+      "dueDate": "Nov 27, 2020, 5:05:20 PM",
+      "done": false
+    },
+    {
+      "description": "Jit se proběhnout",
+      "dueDate": "Nov 27, 2020, 5:05:20 PM",
+      "done": false
+    },
+    {
+      "description": "Vyvařit roušku",
+      "dueDate": "Nov 27, 2020, 5:05:20 PM",
+      "done": false
+    },
+    {
+      "description": "Dodelat ukladani",
+      "dueDate": "Nov 27, 2020, 5:05:22 PM",
+      "done": false
+    },
+    {
+      "description": "Ulozit do JSOnu",
+      "dueDate": "Nov 27, 2020, 5:05:29 PM",
+      "done": false
+    },
+    {
+      "description": "Ukol ze siti",
+      "dueDate": "Nov 27, 2020, 5:05:37 PM",
+      "done": false
+    }
+  ]
+}

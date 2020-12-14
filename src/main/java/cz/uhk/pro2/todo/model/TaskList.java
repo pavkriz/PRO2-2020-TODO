@@ -2,7 +2,9 @@ package cz.uhk.pro2.todo.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TaskList {
 
@@ -31,5 +33,17 @@ public class TaskList {
             }
         }
         return undoneTasks;
+    }
+    public Task getByData(String description, Date dueDate, boolean isDone) {
+        List<Task> tasks = taskList.stream().filter(c -> c.getDescription().equals(description) &&
+                c.getDueDate().equals(dueDate) &&
+                c.isDone() == isDone).collect(Collectors.toList());
+        if(tasks.size() > 0) {
+            return tasks.get(0);
+        }
+        return null;
+    }
+    public Task getByIndex(int index) {
+        return taskList.get(index);
     }
 }
